@@ -7,7 +7,9 @@ beyond importing it and calling classify().
 import argparse
 import importlib.util
 import json
+import math
 import os
+import random
 import statistics
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -18,6 +20,8 @@ MODEL = "claude-haiku-4-5-20251001"
 CONCURRENCY = 20
 MAX_RETRIES = 2  # retries after the first attempt, so 3 attempts at most
 MAX_TOKENS = 64
+SERIAL_TIMING_N = 10
+SEED = 0
 
 SYSTEM_TEMPLATE = """You are a text classifier.
 
@@ -103,6 +107,35 @@ def run_baseline(spec, examples):
     }
 
 
+def time_serial(spec, examples, n=SERIAL_TIMING_N):
+    """Time n classifications one at a time, no threading.
+
+    The concurrent pass measures per-call wall time while 20 requests are in
+    flight, so it absorbs thread contention. This pass isolates true per-call
+    latency. Predictions are discarded; only timing is used.
+    """
+    client = anthropic.Anthropic(max_retries=0)
+    system_prompt = build_system_prompt(spec)
+    chooser = random.Random(SEED)
+    sample = chooser.sample(examples, min(n, len(examples)))
+
+    latencies = []
+    input_tokens = 0
+    output_tokens = 0
+    for ex in sample:
+        _, in_tok, out_tok, elapsed = classify_one(client, system_prompt, ex["text"])
+        latencies.append(elapsed * 1000.0)
+        input_tokens += in_tok
+        output_tokens += out_tok
+
+    return {
+        "latencies": latencies,
+        "input_tokens": input_tokens,
+        "output_tokens": output_tokens,
+        "n": len(sample),
+    }
+
+
 def run_artifact(artifact, spec, examples):
     """Classify every example with the emitted artifact. Read-only use."""
     name_to_index = {label["name"]: i for i, label in enumerate(spec["labels"])}
@@ -151,6 +184,46 @@ def score(gold, predictions, num_classes):
         "unparseable": unparseable,
         "unparseable_by_class": unparseable_by_class,
         "confusion_matrix": matrix,
+    }
+
+
+def mcnemar_exact(gold, predictions_a, predictions_b):
+    """Two-sided exact McNemar test on paired predictions.
+
+    Only the discordant pairs carry information: b = a correct while b wrong,
+    c = b correct while a wrong. Under the null the two classifiers are equally
+    likely to win a discordant pair, so b ~ Binomial(b + c, 0.5). The exact
+    two-sided p-value doubles the smaller tail. An unparseable prediction
+    (None) is incorrect, never a match.
+    """
+    both_correct = only_a = only_b = neither = 0
+    for true_label, pred_a, pred_b in zip(gold, predictions_a, predictions_b):
+        a_correct = pred_a == true_label
+        b_correct = pred_b == true_label
+        if a_correct and b_correct:
+            both_correct += 1
+        elif a_correct:
+            only_a += 1
+        elif b_correct:
+            only_b += 1
+        else:
+            neither += 1
+
+    discordant = only_a + only_b
+    if discordant == 0:
+        p_value = 1.0
+    else:
+        smaller = min(only_a, only_b)
+        tail = sum(math.comb(discordant, k) for k in range(smaller + 1)) / (2 ** discordant)
+        p_value = min(1.0, 2.0 * tail)
+
+    return {
+        "both_correct": both_correct,
+        "only_a": only_a,
+        "only_b": only_b,
+        "neither": neither,
+        "discordant": discordant,
+        "p_value": p_value,
     }
 
 
@@ -208,7 +281,13 @@ def report(dataset_name, spec, examples, artifact):
     baseline_run = run_baseline(spec, examples)
     baseline_scores = score(gold, baseline_run["predictions"], spec["num_classes"])
 
-    width = max(len(name) for name in labels) + 2
+    # Serial pass runs only after the concurrent pass is fully done, so no
+    # requests from it overlap and its timings are contention-free.
+    serial_run = time_serial(spec, examples)
+
+    serial_row = "median latency, serial (ms)"
+    concurrent_row = f"median latency, under concurrency {CONCURRENCY} (ms)"
+    width = max(max(len(name) for name in labels), len(concurrent_row)) + 2
     print()
     print(f"{'metric':<{width}}{'artifact':>14}{'haiku zero-shot':>18}")
     print("-" * (width + 32))
@@ -216,13 +295,22 @@ def report(dataset_name, spec, examples, artifact):
           f"{baseline_scores['accuracy']:>18.4f}")
     print(f"{'macro F1':<{width}}{artifact_scores['macro_f1']:>14.4f}"
           f"{baseline_scores['macro_f1']:>18.4f}")
-    print(f"{'median latency (ms)':<{width}}"
+    print(f"{serial_row:<{width}}"
           f"{statistics.median(artifact_run['latencies']):>14.3f}"
+          f"{statistics.median(serial_run['latencies']):>18.1f}")
+    print(f"{concurrent_row:<{width}}{'-':>14}"
           f"{statistics.median(baseline_run['latencies']):>18.1f}")
     print(f"{'input tokens':<{width}}{'-':>14}{baseline_run['input_tokens']:>18d}")
     print(f"{'output tokens':<{width}}{'-':>14}{baseline_run['output_tokens']:>18d}")
     print(f"{'unparseable':<{width}}{artifact_scores['unparseable']:>14d}"
           f"{baseline_scores['unparseable']:>18d}")
+    print()
+    print(f"serial row: {serial_run['n']} extra calls made one at a time after the "
+          f"concurrent pass; predictions discarded,")
+    print(f"            {serial_run['input_tokens']} in / {serial_run['output_tokens']} "
+          f"out tokens NOT included in the token rows above.")
+    print(f"artifact is measured serially in both cases, so it has no "
+          f"concurrency-{CONCURRENCY} figure.")
     print()
     print(f"{'per-class recall':<{width}}{'artifact':>14}{'haiku zero-shot':>18}")
     print("-" * (width + 32))
@@ -230,6 +318,25 @@ def report(dataset_name, spec, examples, artifact):
         print(f"{name:<{width}}{artifact_scores['recall'][c]:>14.4f}"
               f"{baseline_scores['recall'][c]:>18.4f}"
               f"   (support {artifact_scores['support'][c]})")
+
+    test = mcnemar_exact(gold, artifact_run["predictions"], baseline_run["predictions"])
+    print()
+    print(f"{'McNemar exact test (paired, two-sided)':<{width}}{'count':>32}")
+    print("-" * (width + 32))
+    print(f"{'both correct':<{width}}{test['both_correct']:>32d}")
+    print(f"{'artifact correct, haiku wrong':<{width}}{test['only_a']:>32d}")
+    print(f"{'haiku correct, artifact wrong':<{width}}{test['only_b']:>32d}")
+    print(f"{'both wrong':<{width}}{test['neither']:>32d}")
+    print(f"{'discordant pairs':<{width}}{test['discordant']:>32d}")
+    print(f"{'two-sided exact p':<{width}}{test['p_value']:>32.4f}")
+    if test["discordant"] == 0:
+        print("no discordant pairs: the two agree on every example")
+    elif test["only_a"] == test["only_b"]:
+        print(f"tied: {test['only_a']} discordant pairs each way")
+    else:
+        winner = "artifact" if test["only_a"] > test["only_b"] else "haiku zero-shot"
+        print(f"{winner} wins {max(test['only_a'], test['only_b'])} of "
+              f"{test['discordant']} discordant pairs")
 
     if baseline_scores["unparseable"]:
         print()
