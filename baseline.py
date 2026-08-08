@@ -105,6 +105,27 @@ def classify_one(client, system_prompt, text):
     )
 
 
+def measure_system_prompt_tokens(spec):
+    """Measure the system prompt with count_tokens. Never estimated.
+
+    Counted as (system + probe) minus (probe alone) so the probe message's own
+    tokens do not inflate the figure.
+    """
+    client = anthropic.Anthropic(max_retries=0)
+    probe = [{"role": "user", "content": "x"}]
+    with_system = client.messages.count_tokens(
+        model=MODEL, system=build_system_prompt(spec), messages=probe
+    ).input_tokens
+    without_system = client.messages.count_tokens(
+        model=MODEL, messages=probe
+    ).input_tokens
+    return {
+        "with_system": with_system,
+        "without_system": without_system,
+        "system_tokens": with_system - without_system,
+    }
+
+
 def run_baseline(spec, examples):
     """Classify every example zero-shot. Returns predictions and call stats."""
     client = anthropic.Anthropic(max_retries=0)  # retries are ours, not the SDK's
@@ -369,7 +390,7 @@ def normalise_examples(raw, spec, source):
     return examples
 
 
-def report(dataset_name, spec, examples, artifact):
+def report(dataset_name, spec, examples, artifact, system_tokens):
     labels = [label["name"] for label in spec["labels"]]
     gold = [ex["label"] for ex in examples]
 
@@ -417,15 +438,15 @@ def report(dataset_name, spec, examples, artifact):
     print(f"calls that wrote cache: {baseline_run['cache_write_calls']} of "
           f"{baseline_run['calls']};  calls that read cache: "
           f"{baseline_run['cache_read_calls']} of {baseline_run['calls']}")
-    if baseline_run["cache_creation"] == 0 and baseline_run["cache_read"] == 0:
-        print(f"cache did NOT engage. {MODEL} requires a {MIN_CACHEABLE_TOKENS}-token "
-              f"minimum for a cache_control block;")
-        print(f"this system prompt is far below it, so the breakpoint was ignored "
-              f"with no error returned.")
+    engaged = bool(baseline_run["cache_creation"] or baseline_run["cache_read"])
+    print(f"system prompt {system_tokens} tokens vs {MIN_CACHEABLE_TOKENS} minimum "
+          f"-> caching {'ENGAGED' if engaged else 'did NOT engage'} "
+          f"across all {baseline_run['calls']} calls")
+    if engaged:
+        print("*** cache tokens are non-zero: caching DID engage. "
+              "ACCEPTANCE CHECK FAILED. ***")
 
     # The artifact makes no API calls, so its cost is exactly zero, not rounded.
-    measured = cost_usd(baseline_run["input_tokens"], baseline_run["output_tokens"],
-                        baseline_run["cache_creation"], baseline_run["cache_read"])
     uncached = cost_uncached_usd(total_input, baseline_run["output_tokens"])
     batch = uncached * BATCH_MULTIPLIER
     scale = 1_000_000 / len(examples)
@@ -434,10 +455,10 @@ def report(dataset_name, spec, examples, artifact):
     print("-" * (width + 32))
     print(f"{'uncached (all input at base price)':<{width}}{uncached:>16.6f}"
           f"{uncached * scale:>16.2f}")
-    print(f"{'measured with caching':<{width}}{measured:>16.6f}"
-          f"{measured * scale:>16.2f}")
     print(f"{'batch (50% of uncached)':<{width}}{batch:>16.6f}{batch * scale:>16.2f}")
     print(f"{'artifact':<{width}}{'0':>16}{'0':>16}")
+    print(f"caching unavailable, system prompt is {system_tokens} tokens against "
+          f"a {MIN_CACHEABLE_TOKENS:,} minimum")
     print()
     print(f"prices: ${PRICE_PER_MTOK_INPUT:.2f}/Mtok in, "
           f"${PRICE_PER_MTOK_OUTPUT:.2f}/Mtok out, cache write x"
@@ -503,16 +524,25 @@ def main():
     artifact = load_artifact(args.task_dir, spec)
     print(f"task: {spec['task_name']}   model: {MODEL}   concurrency: {CONCURRENCY}")
     print(f"retries: at most {MAX_RETRIES} per call on API error")
+
+    measured = measure_system_prompt_tokens(spec)
+    system_tokens = measured["system_tokens"]
+    print(f"system prompt: {system_tokens} tokens, measured via count_tokens "
+          f"({measured['with_system']} with system minus "
+          f"{measured['without_system']} for the probe message alone)")
+    print(f"minimum cacheable prompt for {MODEL}: {MIN_CACHEABLE_TOKENS} tokens")
+    print(f"caching can engage: {system_tokens >= MIN_CACHEABLE_TOKENS} "
+          f"({system_tokens} vs {MIN_CACHEABLE_TOKENS})")
     print()
 
     test_examples = normalise_examples(
         load_json(os.path.join(args.task_dir, "test_B.json")), spec, "test_B.json"
     )
-    report("test_B", spec, test_examples, artifact)
+    report("test_B", spec, test_examples, artifact, system_tokens)
 
     if args.wild:
         wild_examples = normalise_examples(load_json(args.wild), spec, args.wild)
-        report(f"wild ({args.wild})", spec, wild_examples, artifact)
+        report(f"wild ({args.wild})", spec, wild_examples, artifact, system_tokens)
 
     print("=== corpus generation cost ===")
     checkpoints = corpus_checkpoints(args.task_dir)
