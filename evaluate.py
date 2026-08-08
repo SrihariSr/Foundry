@@ -8,7 +8,7 @@ import numpy as np
 import torch
 
 from featurise import featurise_batch
-from train import SEED, per_class_metrics, print_metrics, train
+from train import SEED, print_metrics, train
 
 SIZES = [50, 200, 1000, 4000]
 DATA_DIR = "data"

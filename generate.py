@@ -111,7 +111,7 @@ def call_once(client, spec, persona, style, seed_tag, count):
     return items
 
 
-def generate(spec, n_examples, seed_tag):
+def generate(spec, n_examples, seed_tag, out_dir=DATA_DIR):
     """Return a deduplicated list of {"text": str, "label": int}."""
     client = anthropic.Anthropic()
     name_to_index = {label["name"]: i for i, label in enumerate(spec["labels"])}
@@ -136,8 +136,8 @@ def generate(spec, n_examples, seed_tag):
         )
 
     # Each batch is appended to disk as it lands, so a late failure loses nothing.
-    os.makedirs(DATA_DIR, exist_ok=True)
-    checkpoint = os.path.join(DATA_DIR, f"raw_{seed_tag}.jsonl")
+    os.makedirs(out_dir, exist_ok=True)
+    checkpoint = os.path.join(out_dir, f"raw_{seed_tag}.jsonl")
     open(checkpoint, "w").close()
     lock = threading.Lock()
 
@@ -233,82 +233,3 @@ def generate(spec, n_examples, seed_tag):
         print(f"{tag} dropped sample [{reason}]: {json.dumps(item)[:200]}")
     print(f"{tag} raw batches checkpointed to {checkpoint}")
     return examples
-
-
-# --- end to end test -------------------------------------------------------
-
-NEED = (
-    "Triage incoming disaster messages from the public into what emergency "
-    "responders need to act on."
-)
-
-
-def end_to_end():
-    import numpy as np
-
-    from featurise import featurise_batch
-    from spec import make_spec
-    from train import print_metrics, train
-
-    os.makedirs(DATA_DIR, exist_ok=True)
-
-    spec = make_spec(NEED)
-    print()
-    print("=== SPEC JSON ===")
-    print(json.dumps(spec, indent=2))
-    with open(os.path.join(DATA_DIR, "spec.json"), "w") as f:
-        json.dump(spec, f, indent=2)
-
-    print()
-    print("=== GENERATION ===")
-    train_examples = generate(spec, 200, seed_tag="A")
-    print()
-    test_examples = generate(spec, 100, seed_tag="B")
-
-    with open(os.path.join(DATA_DIR, "train_A.json"), "w") as f:
-        json.dump(train_examples, f, indent=2)
-    with open(os.path.join(DATA_DIR, "test_B.json"), "w") as f:
-        json.dump(test_examples, f, indent=2)
-
-    train_keys = {normalise(ex["text"]) for ex in train_examples}
-    overlap = sum(1 for ex in test_examples if normalise(ex["text"]) in train_keys)
-    print()
-    print(f"train/test text overlap: {overlap} of {len(test_examples)} test examples")
-
-    print()
-    print("=== 10 RANDOM GENERATED EXAMPLES (train) ===")
-    for ex in random.Random(0).sample(train_examples, 10):
-        print(f"[{spec['labels'][ex['label']]['name']}] {ex['text']}")
-
-    X_train = featurise_batch([ex["text"] for ex in train_examples])
-    y_train = np.array([ex["label"] for ex in train_examples], dtype=np.int64)
-    X_test = featurise_batch([ex["text"] for ex in test_examples])
-    y_test = np.array([ex["label"] for ex in test_examples], dtype=np.int64)
-
-    print()
-    print("=== TRAINING ===")
-    print(f"X_train {X_train.shape}   X_test {X_test.shape}")
-    _, metrics = train(X_train, y_train, X_test, y_test, num_classes=spec["num_classes"])
-    print()
-    for i, label in enumerate(spec["labels"]):
-        print(f"class {i} = {label['name']}")
-    print()
-    print_metrics(metrics)
-
-    dedup_train_ok = len(train_examples) >= 0.85 * 200
-    dedup_test_ok = len(test_examples) >= 0.85 * 100
-    accuracy_ok = metrics["test_accuracy"] > 0.70
-    recall_ok = bool((metrics["recall"] > 0).all())
-
-    print()
-    print(f"ACCEPTANCE accuracy > 0.70: {accuracy_ok} (got {metrics['test_accuracy']:.4f})")
-    print(f"ACCEPTANCE no zero recall: {recall_ok} "
-          f"(got {[round(float(r), 4) for r in metrics['recall']]})")
-    print(f"ACCEPTANCE dedup >= 85%: train {dedup_train_ok} "
-          f"({len(train_examples)}/200), test {dedup_test_ok} ({len(test_examples)}/100)")
-    print("ACCEPTANCE CHECK:",
-          "PASS" if (accuracy_ok and recall_ok and dedup_train_ok and dedup_test_ok) else "FAIL")
-
-
-if __name__ == "__main__":
-    end_to_end()

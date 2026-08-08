@@ -1,5 +1,6 @@
 """Trained model -> one self-contained stdlib-only .py artifact."""
 
+import argparse
 import base64
 import importlib.util
 import json
@@ -150,18 +151,22 @@ def emit(model, spec, path):
     return path
 
 
-def load_json(name):
-    path = os.path.join(DATA_DIR, name)
+def load_json(task_dir, name):
+    path = os.path.join(task_dir, name)
     if not os.path.exists(path):
         raise FileNotFoundError(f"{path} not found. Generate the corpus first.")
     with open(path) as f:
         return json.load(f)
 
 
-def main():
-    spec = load_json("spec.json")
-    train_examples = load_json("train_A.json")
-    test_examples = load_json("test_B.json")
+def artifact_path(task_dir, spec):
+    return os.path.join(task_dir, f"{spec['task_name']}_classifier.py")
+
+
+def main(task_dir):
+    spec = load_json(task_dir, "spec.json")
+    train_examples = load_json(task_dir, "train_A.json")
+    test_examples = load_json(task_dir, "test_B.json")
     labels = [label["name"] for label in spec["labels"]]
 
     random.seed(SEED)
@@ -178,13 +183,13 @@ def main():
     print(f"torch test accuracy: {metrics['test_accuracy']:.4f}")
     print()
 
-    artifact_path = os.path.join(DATA_DIR, f"{spec['task_name']}_classifier.py")
-    emit(model, spec, artifact_path)
-    size_kb = os.path.getsize(artifact_path) / 1024
-    print(f"emitted: {artifact_path}")
+    path = artifact_path(task_dir, spec)
+    emit(model, spec, path)
+    size_kb = os.path.getsize(path) / 1024
+    print(f"emitted: {path}")
     print(f"size: {size_kb:.1f} KB")
 
-    source = open(artifact_path).read()
+    source = open(path).read()
     for banned in ("import torch", "import numpy"):
         if banned in source:
             raise ValueError(f"emitted artifact contains {banned!r}")
@@ -205,7 +210,7 @@ def main():
     env = dict(os.environ)
     env["PYTHONHASHSEED"] = FRESH_HASH_SEED
     completed = subprocess.run(
-        [sys.executable, artifact_path],
+        [sys.executable, path],
         input=stdin_text,
         capture_output=True,
         text=True,
@@ -234,7 +239,7 @@ def main():
     print()
 
     # --- timing ------------------------------------------------------------
-    module_spec = importlib.util.spec_from_file_location("artifact", artifact_path)
+    module_spec = importlib.util.spec_from_file_location("artifact", path)
     artifact = importlib.util.module_from_spec(module_spec)
     module_spec.loader.exec_module(artifact)
 
@@ -258,4 +263,6 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description="Emit and verify a task's artifact.")
+    parser.add_argument("task_dir", help="directory holding spec.json, train_A.json, test_B.json")
+    main(parser.parse_args().task_dir)
