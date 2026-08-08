@@ -1,6 +1,6 @@
-"""Zero-shot Claude baseline, measured against the emitted artifact.
+"""Zero-shot Claude baseline, measured against the emitted casting.
 
-Reads a task directory only. Never writes to it, never touches the artifact
+Reads a task directory only. Never writes to it, never touches the casting
 beyond importing it and calling classify().
 """
 
@@ -212,14 +212,14 @@ def time_serial(spec, examples, n=SERIAL_TIMING_N):
     }
 
 
-def run_artifact(artifact, spec, examples):
-    """Classify every example with the emitted artifact. Read-only use."""
+def run_casting(casting, spec, examples):
+    """Classify every example with the emitted casting. Read-only use."""
     name_to_index = {label["name"]: i for i, label in enumerate(spec["labels"])}
     predictions = []
     latencies = []
     for ex in examples:
         start = time.perf_counter()
-        label = artifact.classify(ex["text"])
+        label = casting.classify(ex["text"])
         latencies.append((time.perf_counter() - start) * 1000.0)
         predictions.append(name_to_index[label])
     return {"predictions": predictions, "latencies": latencies}
@@ -355,11 +355,11 @@ def load_json(path):
         return json.load(f)
 
 
-def load_artifact(task_dir, spec):
+def load_casting(task_dir, spec):
     path = os.path.join(task_dir, f"{spec['task_name']}_classifier.py")
     if not os.path.exists(path):
-        raise FileNotFoundError(f"{path} not found. Emit the artifact first.")
-    module_spec = importlib.util.spec_from_file_location("artifact", path)
+        raise FileNotFoundError(f"{path} not found. Emit the casting first.")
+    module_spec = importlib.util.spec_from_file_location("casting", path)
     module = importlib.util.module_from_spec(module_spec)
     module_spec.loader.exec_module(module)
     return module
@@ -390,14 +390,14 @@ def normalise_examples(raw, spec, source):
     return examples
 
 
-def report(dataset_name, spec, examples, artifact, system_tokens):
+def report(dataset_name, spec, examples, casting, system_tokens):
     labels = [label["name"] for label in spec["labels"]]
     gold = [ex["label"] for ex in examples]
 
     print(f"=== {dataset_name}: {len(examples)} examples, {spec['num_classes']} classes ===")
 
-    artifact_run = run_artifact(artifact, spec, examples)
-    artifact_scores = score(gold, artifact_run["predictions"], spec["num_classes"])
+    casting_run = run_casting(casting, spec, examples)
+    casting_scores = score(gold, casting_run["predictions"], spec["num_classes"])
 
     baseline_run = run_baseline(spec, examples)
     baseline_scores = score(gold, baseline_run["predictions"], spec["num_classes"])
@@ -410,14 +410,14 @@ def report(dataset_name, spec, examples, artifact, system_tokens):
     concurrent_row = f"median latency, under concurrency {CONCURRENCY} (ms)"
     width = max(max(len(name) for name in labels), len(concurrent_row)) + 2
     print()
-    print(f"{'metric':<{width}}{'artifact':>14}{'haiku zero-shot':>18}")
+    print(f"{'metric':<{width}}{'casting':>14}{'haiku zero-shot':>18}")
     print("-" * (width + 32))
-    print(f"{'accuracy':<{width}}{artifact_scores['accuracy']:>14.4f}"
+    print(f"{'accuracy':<{width}}{casting_scores['accuracy']:>14.4f}"
           f"{baseline_scores['accuracy']:>18.4f}")
-    print(f"{'macro F1':<{width}}{artifact_scores['macro_f1']:>14.4f}"
+    print(f"{'macro F1':<{width}}{casting_scores['macro_f1']:>14.4f}"
           f"{baseline_scores['macro_f1']:>18.4f}")
     print(f"{serial_row:<{width}}"
-          f"{statistics.median(artifact_run['latencies']):>14.3f}"
+          f"{statistics.median(casting_run['latencies']):>14.3f}"
           f"{statistics.median(serial_run['latencies']):>18.1f}")
     print(f"{concurrent_row:<{width}}{'-':>14}"
           f"{statistics.median(baseline_run['latencies']):>18.1f}")
@@ -428,7 +428,7 @@ def report(dataset_name, spec, examples, artifact, system_tokens):
     print(f"{'cache read tokens':<{width}}{'-':>14}{baseline_run['cache_read']:>18d}")
     print(f"{'total input tokens':<{width}}{'-':>14}{total_input:>18d}")
     print(f"{'output tokens':<{width}}{'-':>14}{baseline_run['output_tokens']:>18d}")
-    print(f"{'unparseable':<{width}}{artifact_scores['unparseable']:>14d}"
+    print(f"{'unparseable':<{width}}{casting_scores['unparseable']:>14d}"
           f"{baseline_scores['unparseable']:>18d}")
 
     hit_rate = baseline_run["cache_read"] / total_input if total_input else 0.0
@@ -446,7 +446,7 @@ def report(dataset_name, spec, examples, artifact, system_tokens):
         print("*** cache tokens are non-zero: caching DID engage. "
               "ACCEPTANCE CHECK FAILED. ***")
 
-    # The artifact makes no API calls, so its cost is exactly zero, not rounded.
+    # The casting makes no API calls, so its cost is exactly zero, not rounded.
     uncached = cost_uncached_usd(total_input, baseline_run["output_tokens"])
     batch = uncached * BATCH_MULTIPLIER
     scale = 1_000_000 / len(examples)
@@ -456,7 +456,7 @@ def report(dataset_name, spec, examples, artifact, system_tokens):
     print(f"{'uncached (all input at base price)':<{width}}{uncached:>16.6f}"
           f"{uncached * scale:>16.2f}")
     print(f"{'batch (50% of uncached)':<{width}}{batch:>16.6f}{batch * scale:>16.2f}")
-    print(f"{'artifact':<{width}}{'0':>16}{'0':>16}")
+    print(f"{'casting':<{width}}{'0':>16}{'0':>16}")
     print(f"caching unavailable, system prompt is {system_tokens} tokens against "
           f"a {MIN_CACHEABLE_TOKENS:,} minimum")
     print()
@@ -469,23 +469,23 @@ def report(dataset_name, spec, examples, artifact, system_tokens):
     print(f"            {serial_run['input_tokens']} in / {serial_run['output_tokens']} "
           f"out tokens NOT included in the token or cost rows above "
           f"(${cost_usd(serial_run['input_tokens'], serial_run['output_tokens'], serial_run['cache_creation'], serial_run['cache_read']):.6f}).")
-    print(f"artifact is measured serially in both cases, so it has no "
+    print(f"casting is measured serially in both cases, so it has no "
           f"concurrency-{CONCURRENCY} figure.")
     print()
-    print(f"{'per-class recall':<{width}}{'artifact':>14}{'haiku zero-shot':>18}")
+    print(f"{'per-class recall':<{width}}{'casting':>14}{'haiku zero-shot':>18}")
     print("-" * (width + 32))
     for c, name in enumerate(labels):
-        print(f"{name:<{width}}{artifact_scores['recall'][c]:>14.4f}"
+        print(f"{name:<{width}}{casting_scores['recall'][c]:>14.4f}"
               f"{baseline_scores['recall'][c]:>18.4f}"
-              f"   (support {artifact_scores['support'][c]})")
+              f"   (support {casting_scores['support'][c]})")
 
-    test = mcnemar_exact(gold, artifact_run["predictions"], baseline_run["predictions"])
+    test = mcnemar_exact(gold, casting_run["predictions"], baseline_run["predictions"])
     print()
     print(f"{'McNemar exact test (paired, two-sided)':<{width}}{'count':>32}")
     print("-" * (width + 32))
     print(f"{'both correct':<{width}}{test['both_correct']:>32d}")
-    print(f"{'artifact correct, haiku wrong':<{width}}{test['only_a']:>32d}")
-    print(f"{'haiku correct, artifact wrong':<{width}}{test['only_b']:>32d}")
+    print(f"{'casting correct, haiku wrong':<{width}}{test['only_a']:>32d}")
+    print(f"{'haiku correct, casting wrong':<{width}}{test['only_b']:>32d}")
     print(f"{'both wrong':<{width}}{test['neither']:>32d}")
     print(f"{'discordant pairs':<{width}}{test['discordant']:>32d}")
     print(f"{'two-sided exact p':<{width}}{test['p_value']:>32.4f}")
@@ -494,7 +494,7 @@ def report(dataset_name, spec, examples, artifact, system_tokens):
     elif test["only_a"] == test["only_b"]:
         print(f"tied: {test['only_a']} discordant pairs each way")
     else:
-        winner = "artifact" if test["only_a"] > test["only_b"] else "haiku zero-shot"
+        winner = "casting" if test["only_a"] > test["only_b"] else "haiku zero-shot"
         print(f"{winner} wins {max(test['only_a'], test['only_b'])} of "
               f"{test['discordant']} discordant pairs")
 
@@ -514,14 +514,14 @@ def report(dataset_name, spec, examples, artifact, system_tokens):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Zero-shot Claude baseline vs the emitted artifact."
+        description="Zero-shot Claude baseline vs the emitted casting."
     )
     parser.add_argument("task_dir", help="directory holding spec.json and test_B.json")
     parser.add_argument("--wild", help="JSON file of {text, label} pairs")
     args = parser.parse_args()
 
     spec = load_json(os.path.join(args.task_dir, "spec.json"))
-    artifact = load_artifact(args.task_dir, spec)
+    casting = load_casting(args.task_dir, spec)
     print(f"task: {spec['task_name']}   model: {MODEL}   concurrency: {CONCURRENCY}")
     print(f"retries: at most {MAX_RETRIES} per call on API error")
 
@@ -538,11 +538,11 @@ def main():
     test_examples = normalise_examples(
         load_json(os.path.join(args.task_dir, "test_B.json")), spec, "test_B.json"
     )
-    report("test_B", spec, test_examples, artifact, system_tokens)
+    report("test_B", spec, test_examples, casting, system_tokens)
 
     if args.wild:
         wild_examples = normalise_examples(load_json(args.wild), spec, args.wild)
-        report(f"wild ({args.wild})", spec, wild_examples, artifact, system_tokens)
+        report(f"wild ({args.wild})", spec, wild_examples, casting, system_tokens)
 
     print("=== corpus generation cost ===")
     checkpoints = corpus_checkpoints(args.task_dir)

@@ -29,10 +29,10 @@ DATA_DIR = os.path.join(ROOT, "data")
 UI_FILE = os.path.join(ROOT, "ui.html")
 PORT = int(os.environ.get("FOUNDRY_PORT", "8000"))
 
-# Artifact modules are cached by path and mtime: re-emitting a task picks up
+# Casting modules are cached by path and mtime: re-emitting a task picks up
 # the new weights without a server restart.
-_artifact_cache = {}
-_artifact_lock = threading.Lock()
+_casting_cache = {}
+_casting_lock = threading.Lock()
 
 
 # --- loading ---------------------------------------------------------------
@@ -54,31 +54,31 @@ def task_slugs():
     return out
 
 
-def artifact_file(slug):
+def casting_file(slug):
     d = os.path.join(DATA_DIR, slug)
     spec = read_json(os.path.join(d, "spec.json"))
     return os.path.join(d, f"{spec['task_name']}_classifier.py")
 
 
-def load_artifact(slug):
-    """Import an emitted artifact. Cached until the file changes on disk."""
-    path = artifact_file(slug)
+def load_casting(slug):
+    """Import an emitted casting. Cached until the file changes on disk."""
+    path = casting_file(slug)
     if not os.path.exists(path):
-        raise FileNotFoundError(f"no artifact for {slug}; run a build first")
+        raise FileNotFoundError(f"no casting for {slug}; run a build first")
     stamp = os.path.getmtime(path)
-    with _artifact_lock:
-        hit = _artifact_cache.get(path)
+    with _casting_lock:
+        hit = _casting_cache.get(path)
         if hit and hit[0] == stamp:
             return hit[1]
-        spec = importlib.util.spec_from_file_location(f"artifact_{slug}", path)
+        spec = importlib.util.spec_from_file_location(f"casting_{slug}", path)
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
-        _artifact_cache[path] = (stamp, module)
+        _casting_cache[path] = (stamp, module)
         return module
 
 
 def softmax(values):
-    """Stable softmax. The artifact exposes logits(); probabilities are ours."""
+    """Stable softmax. The casting exposes logits(); probabilities are ours."""
     top = max(values)
     exps = [math.exp(v - top) for v in values]
     total = sum(exps)
@@ -88,11 +88,11 @@ def softmax(values):
 # --- metrics ---------------------------------------------------------------
 
 def evaluate_set(slug, examples):
-    """Score the artifact over {text, label} pairs. label may be index or name."""
+    """Score the casting over {text, label} pairs. label may be index or name."""
     spec = read_json(os.path.join(DATA_DIR, slug, "spec.json"))
     names = [l["name"] for l in spec["labels"]]
     index_of = {n: i for i, n in enumerate(names)}
-    module = load_artifact(slug)
+    module = load_casting(slug)
     k = len(names)
 
     matrix = [[0] * k for _ in range(k)]
@@ -144,8 +144,8 @@ def evaluate_set(slug, examples):
 def task_summary(slug):
     d = os.path.join(DATA_DIR, slug)
     spec = read_json(os.path.join(d, "spec.json"))
-    path = artifact_file(slug)
-    has_artifact = os.path.exists(path)
+    path = casting_file(slug)
+    has_casting = os.path.exists(path)
     train_path = os.path.join(d, "train_A.json")
     test_path = os.path.join(d, "test_B.json")
     return {
@@ -154,8 +154,8 @@ def task_summary(slug):
         "num_classes": spec["num_classes"],
         "labels": [l["name"] for l in spec["labels"]],
         "definitions": [l.get("definition", "") for l in spec["labels"]],
-        "has_artifact": has_artifact,
-        "artifact_kb": round(os.path.getsize(path) / 1024, 1) if has_artifact else None,
+        "has_casting": has_casting,
+        "casting_kb": round(os.path.getsize(path) / 1024, 1) if has_casting else None,
         "n_train": len(read_json(train_path)) if os.path.exists(train_path) else 0,
         "n_test": len(read_json(test_path)) if os.path.exists(test_path) else 0,
     }
@@ -248,7 +248,7 @@ class Handler(BaseHTTPRequestHandler):
                 if slug not in task_slugs():
                     return self._fail(404, f"unknown task {slug}")
                 summary = task_summary(slug)
-                if summary["has_artifact"]:
+                if summary["has_casting"]:
                     test = read_json(os.path.join(DATA_DIR, slug, "test_B.json"))
                     summary["test_metrics"] = evaluate_set(slug, test)
                 return self._send(200, summary)
@@ -298,7 +298,7 @@ class Handler(BaseHTTPRequestHandler):
                     return self._fail(404, f"unknown task {slug}")
                 if len(" ".join(text.lower().split())) < 3:
                     return self._fail(400, "needs at least 3 characters")
-                module = load_artifact(slug)
+                module = load_casting(slug)
                 names = task_summary(slug)["labels"]
                 start = time.perf_counter()
                 raw = module.logits(text)

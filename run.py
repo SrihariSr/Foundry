@@ -9,7 +9,7 @@ import re
 import numpy as np
 import torch
 
-from emit import artifact_path, emit
+from emit import casting_path, emit
 from featurise import featurise_batch
 from generate import generate
 from spec import make_spec
@@ -72,10 +72,10 @@ def run(need, n_train, n_test):
     print()
 
     print("[5/5] emit")
-    path = artifact_path(task_dir, spec)
+    path = casting_path(task_dir, spec)
     emit(model, spec, path)
     size_kb = os.path.getsize(path) / 1024
-    print(f"      artifact: {path}")
+    print(f"      casting: {path}")
     print(f"      size: {size_kb:.1f} KB")
     print()
 
@@ -83,7 +83,7 @@ def run(need, n_train, n_test):
     print(f"  task dir:      {task_dir}")
     print(f"  train / test:  {len(train_examples)} / {len(test_examples)}")
     print(f"  test accuracy: {metrics['test_accuracy']:.4f}")
-    print(f"  artifact:      {path} ({size_kb:.1f} KB)")
+    print(f"  casting:      {path} ({size_kb:.1f} KB)")
     print(f"  verify with:   python3 emit.py {task_dir}")
     return task_dir
 

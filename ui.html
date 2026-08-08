@@ -189,7 +189,7 @@ tr:last-child td{border-bottom:0}
           <li data-s="2"><span class="n">2</span> Generate held-out set</li>
           <li data-s="3"><span class="n">3</span> Generate training set</li>
           <li data-s="4"><span class="n">4</span> Train</li>
-          <li data-s="5"><span class="n">5</span> Emit artifact</li>
+          <li data-s="5"><span class="n">5</span> Emit casting</li>
         </ol>
         <div class="log" id="log"></div>
         <div class="err-box" id="cast-err"></div>
@@ -298,13 +298,13 @@ async function loadTask(slug) {
       $('chips').appendChild(c);
     });
   $('verdict').innerHTML = '';
-  if (!t.has_artifact) {
-    $('stats').innerHTML = '<div class="stat"><div class="k">No artifact yet</div><div class="s">cast a model first</div></div>';
+  if (!t.has_casting) {
+    $('stats').innerHTML = '<div class="stat"><div class="k">No casting yet</div><div class="s">cast a model first</div></div>';
     $('per-class').innerHTML = ''; $('cm-wrap').innerHTML = ''; $('miss-wrap').innerHTML = '';
     return;
   }
   $('meas-sub').textContent = `held-out set · ${t.n_test} examples · trained on ${t.n_train}`;
-  paintMetrics(t.test_metrics, t.artifact_kb);
+  paintMetrics(t.test_metrics, t.casting_kb);
 }
 
 /* ---- metrics ---- */
@@ -313,7 +313,7 @@ function paintMetrics(m, kb) {
     <div class="stat"><div class="k">Accuracy</div><div class="v">${pct(m.accuracy)}</div><div class="s">${m.n} examples</div></div>
     <div class="stat"><div class="k">Macro F1</div><div class="v">${m.macro_f1.toFixed(3)}</div><div class="s">unweighted</div></div>
     <div class="stat"><div class="k">Latency</div><div class="v">${m.median_latency_ms.toFixed(2)}<span style="font-size:12px"> ms</span></div><div class="s">median, on device</div></div>
-    <div class="stat"><div class="k">Artifact</div><div class="v">${kb ? kb.toFixed(0) : '—'}<span style="font-size:12px"> KB</span></div><div class="s">stdlib only</div></div>`;
+    <div class="stat"><div class="k">Casting</div><div class="v">${kb ? kb.toFixed(0) : '—'}<span style="font-size:12px"> KB</span></div><div class="s">stdlib only</div></div>`;
 
   let rows = '';
   m.labels.forEach((n, i) => {
