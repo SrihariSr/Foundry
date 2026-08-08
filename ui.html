@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Foundry</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* Fonts load from Google once then sit in browser cache, so they survive the
+   wifi being killed. Load the page once with the network on before demoing.
+   The fallback stack is solid either way. */
+:root{
+  --steel-950:#141210; --steel-900:#1C1916; --steel-800:#282320; --steel-700:#3A342E;
+  --concrete:#E4DFD5; --concrete-dk:#D8D2C6;
+  --paper:#F5F2EB; --paper-dk:#EDE8DF;
+  --ink:#1A1613; --muted:#6E665A; --faint:#9B9384; --rule:#D3CCBD; --rule-soft:#E2DCD0;
+  --molten:#B4530A; --molten-hot:#D97706; --molten-wash:#F7EBD9;
+  --patina:#2F5D53; --patina-wash:#E4EDE9;
+  --oxide:#8F3A22; --oxide-wash:#F5E5DF;
+  --display:'Archivo',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--concrete); color:var(--ink); font-family:var(--display); font-size:14px; line-height:1.5; -webkit-font-smoothing:antialiased}
+body::after{content:''; position:fixed; inset:0; pointer-events:none; z-index:99; opacity:.045;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+h1,h2,h3{margin:0;font-weight:600;letter-spacing:-0.015em}
+button,input,textarea,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--molten-hot);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+.top{background:var(--steel-950); border-bottom:1px solid #000; position:sticky; top:0; z-index:20}
+.top-in{max-width:1220px; margin:0 auto; padding:16px 26px; display:flex; align-items:center; gap:20px; flex-wrap:wrap}
+.mark{display:flex; align-items:baseline; gap:12px}
+.mark strong{font-size:16px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; color:var(--paper)}
+.mark span{font-family:var(--mono); font-size:10.5px; color:#7C7266}
+.top-sp{flex:1}
+.picker{display:flex; align-items:center; gap:9px}
+.picker label{font-family:var(--mono); font-size:10px; text-transform:uppercase; letter-spacing:0.12em; color:#7C7266}
+select{border:1px solid var(--steel-700); background:var(--steel-800); color:var(--paper); border-radius:3px; padding:6px 9px; font-size:12.5px; max-width:270px}
+select:hover{border-color:#4E463D}
+.net{font-family:var(--mono); font-size:10.5px; color:#9C9284; white-space:nowrap; letter-spacing:0.04em}
+.dot{display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--patina); margin-right:6px; vertical-align:middle; box-shadow:0 0 0 3px rgba(47,93,83,.18)}
+.dot.off{background:var(--molten-hot); box-shadow:0 0 0 3px rgba(217,119,6,.2)}
+
+.wrap{max-width:1220px; margin:0 auto; padding:26px}
+.cols{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:22px; align-items:start}
+@media (max-width:920px){.cols{grid-template-columns:minmax(0,1fr)}}
+
+.card{background:var(--paper); border:1px solid var(--rule); border-radius:4px; box-shadow:0 1px 0 rgba(26,22,19,.04)}
+.card-h{padding:14px 20px; border-bottom:1px solid var(--rule-soft); display:flex; align-items:baseline; gap:12px; background:var(--paper-dk); border-radius:3px 3px 0 0}
+.card-h h2{font-size:12px; text-transform:uppercase; letter-spacing:0.12em; font-weight:600}
+.card-h p{margin:0; font-family:var(--mono); font-size:11px; color:var(--faint)}
+.card-b{padding:20px}
+
+.field{margin-bottom:15px}
+.field label{display:block; font-family:var(--mono); font-size:10px; text-transform:uppercase; letter-spacing:0.12em; color:var(--muted); margin-bottom:7px}
+textarea,input[type=text],input[type=number]{width:100%; border:1px solid var(--rule); border-radius:3px; padding:10px 12px; background:#FBF9F5; resize:vertical; font-size:13.5px}
+textarea{min-height:78px; line-height:1.6}
+textarea:focus,input:focus{border-color:var(--steel-700); background:#fff}
+.row{display:flex; gap:14px}
+.row>div{flex:1}
+.hint{font-size:11.5px; color:var(--faint); margin-top:6px; line-height:1.5}
+.btn{border:1px solid var(--steel-950); background:var(--steel-950); color:var(--paper); padding:9px 18px; border-radius:3px; cursor:pointer; font-size:11.5px; font-weight:600; text-transform:uppercase; letter-spacing:0.1em; font-family:var(--mono)}
+.btn:hover:not(:disabled){background:var(--steel-800)}
+.btn:disabled{opacity:.35; cursor:not-allowed}
+.btn.ghost{background:transparent; color:var(--ink); border-color:var(--rule)}
+.btn.ghost:hover:not(:disabled){border-color:var(--steel-700); background:transparent}
+.actions{display:flex; align-items:center; gap:14px; flex-wrap:wrap}
+
+.rail{list-style:none; margin:18px 0 0; padding:0; border-top:1px solid var(--rule-soft)}
+.rail li{display:flex; align-items:center; gap:12px; padding:10px 0 10px 13px; border-bottom:1px solid var(--rule-soft); border-left:2px solid transparent; font-size:13px; color:var(--faint); transition:color .2s, border-color .2s, background .2s}
+.rail li .n{font-family:var(--mono); font-size:10.5px; width:15px}
+.rail li.active{color:var(--ink); border-left-color:var(--molten-hot); background:var(--molten-wash)}
+.rail li.active .n{color:var(--molten)}
+.rail li.done{color:var(--muted); border-left-color:var(--patina)}
+.rail li.done .n{color:var(--patina)}
+.rail li .tick{margin-left:auto; font-family:var(--mono); font-size:9.5px; text-transform:uppercase; letter-spacing:0.12em; color:var(--patina)}
+.pulse{width:5px; height:5px; border-radius:50%; background:var(--molten-hot); margin-left:auto; animation:breathe 1.5s ease-in-out infinite}
+@keyframes breathe{0%,100%{opacity:.2}50%{opacity:1}}
+
+.log{margin-top:16px; background:var(--steel-950); border-radius:3px; font-family:var(--mono); font-size:11px; line-height:1.75; color:#A79C8C; padding:13px 15px; max-height:220px; overflow:auto; white-space:pre-wrap; word-break:break-word}
+.log:empty{display:none}
+
+.verdict{border:1px solid var(--rule); border-radius:3px; padding:16px 18px; margin-top:16px; background:#FBF9F5}
+.verdict.on{border-color:var(--patina); background:var(--patina-wash)}
+.verdict-top{display:flex; align-items:baseline; gap:12px; flex-wrap:wrap}
+.verdict-top .lab{font-family:var(--mono); font-size:15px; font-weight:700; color:var(--patina)}
+.verdict-top .meta{margin-left:auto; font-family:var(--mono); font-size:10.5px; color:var(--muted)}
+.bars{margin-top:14px; display:grid; gap:6px}
+.bar{display:grid; grid-template-columns:1fr 48px; gap:11px; align-items:center}
+.bar .track{position:relative; height:18px; background:var(--concrete-dk); border-radius:2px; overflow:hidden}
+.bar .fill{position:absolute; inset:0 auto 0 0; background:#B3AB9C; transition:width .3s cubic-bezier(.4,0,.2,1)}
+.bar.top .fill{background:var(--patina)}
+.bar .name{position:absolute; left:8px; top:0; height:18px; line-height:18px; font-family:var(--mono); font-size:10px; color:var(--ink); white-space:nowrap}
+.bar.top .name{color:var(--paper)}
+.bar .pct{font-family:var(--mono); font-size:10.5px; color:var(--muted); text-align:right}
+.chips{display:flex; gap:7px; flex-wrap:wrap; margin-top:13px}
+.chip{border:1px solid var(--rule); background:transparent; border-radius:2px; padding:5px 10px; font-size:11.5px; color:var(--muted); cursor:pointer}
+.chip:hover{border-color:var(--steel-700); color:var(--ink)}
+
+.stats{display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--rule)}
+@media (max-width:720px){.stats{grid-template-columns:repeat(2,1fr)}}
+.stat{background:var(--paper); padding:17px 19px}
+.stat .k{font-family:var(--mono); font-size:9.5px; text-transform:uppercase; letter-spacing:0.13em; color:var(--faint)}
+.stat .v{font-family:var(--mono); font-size:23px; font-weight:700; margin-top:5px; letter-spacing:-0.03em}
+.stat .s{font-family:var(--mono); font-size:10px; color:var(--faint); margin-top:2px}
+
+table{width:100%; border-collapse:collapse; font-size:12.5px}
+th{text-align:left; font-family:var(--mono); font-weight:500; font-size:9.5px; text-transform:uppercase; color:var(--faint); letter-spacing:0.12em; padding:8px 11px; border-bottom:1px solid var(--rule)}
+td{padding:8px 11px; border-bottom:1px solid var(--rule-soft)}
+td.num,th.num{text-align:right; font-family:var(--mono); font-size:11.5px}
+td.lab{font-family:var(--mono); font-size:11.5px}
+tr:last-child td{border-bottom:0}
+.weak{color:var(--oxide); font-weight:500}
+.perfect{color:var(--patina)}
+
+.cm{font-family:var(--mono); font-size:10.5px; border-collapse:collapse; margin-top:5px}
+.cm td,.cm th{border:1px solid var(--rule-soft); padding:6px 9px; text-align:center}
+.cm th{color:var(--faint); font-weight:400; font-size:9.5px}
+.cm th.rowh{text-align:right; color:var(--muted); font-size:10px}
+.cm td.diag{background:var(--patina-wash); color:var(--patina); font-weight:700}
+.cm td.err{background:var(--oxide-wash); color:var(--oxide); font-weight:500}
+.cm td.zero{color:#C4BCAC}
+
+.miss-list{margin:0; padding:0; list-style:none; font-size:12.5px}
+.miss-list li{padding:10px 0; border-bottom:1px solid var(--rule-soft)}
+.miss-list li:last-child{border-bottom:0}
+.miss-list .t{display:block; margin-bottom:4px; line-height:1.5}
+.miss-list .m{font-family:var(--mono); font-size:10.5px; color:var(--muted)}
+.miss-list .m b{color:var(--oxide); font-weight:500}
+
+.empty{color:var(--faint); font-size:13px; padding:7px 0; line-height:1.6}
+.err-box{border:1px solid var(--oxide); background:var(--oxide-wash); color:var(--oxide); border-radius:3px; padding:11px 14px; font-size:12.5px; margin-top:13px}
+.err-box:empty{display:none}
+.sec{margin-top:22px}
+.sec-h{display:flex; align-items:baseline; gap:11px; margin-bottom:12px}
+.sec-h h3{font-size:10px; text-transform:uppercase; letter-spacing:0.13em; color:var(--muted); font-family:var(--mono); font-weight:500}
+.sec-h span{font-size:11.5px; color:var(--faint)}
+</style>
+</head>
+<body>
+
+
+<header class="top">
+  <div class="top-in">
+    <div class="mark"><strong>Foundry</strong><span>describe a task, get a classifier</span></div>
+    <div class="top-sp"></div>
+    <div class="picker">
+      <label for="task">Model</label>
+      <select id="task"></select>
+    </div>
+    <div class="net" id="net"><span class="dot"></span><b>checking</b></div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="cols">
+
+    <!-- ---------- cast ---------- -->
+    <section class="card">
+      <div class="card-h"><h2>Cast a model</h2><p>runs the same pipeline as run.py</p></div>
+      <div class="card-b">
+        <div class="field">
+          <label for="need">What should it sort?</label>
+          <textarea id="need" placeholder="Triage incoming disaster messages from the public into what emergency responders need to act on."></textarea>
+          <div class="hint">Claude writes the label scheme, then the training data. Nothing is labelled by hand.</div>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label for="ntrain">Training examples</label>
+            <input type="number" id="ntrain" value="4000" min="50" max="20000" step="50">
+          </div>
+          <div class="field">
+            <label for="ntest">Held-out examples</label>
+            <input type="number" id="ntest" value="100" min="20" max="1000" step="10">
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn" id="cast">Cast model</button>
+          <span class="hint" id="cast-note">Needs a network and an API key.</span>
+        </div>
+
+        <ol class="rail" id="rail">
+          <li data-s="1"><span class="n">1</span> Write the label scheme</li>
+          <li data-s="2"><span class="n">2</span> Generate held-out set</li>
+          <li data-s="3"><span class="n">3</span> Generate training set</li>
+          <li data-s="4"><span class="n">4</span> Train</li>
+          <li data-s="5"><span class="n">5</span> Emit artifact</li>
+        </ol>
+        <div class="log" id="log"></div>
+        <div class="err-box" id="cast-err"></div>
+      </div>
+    </section>
+
+    <!-- ---------- bench ---------- -->
+    <section class="card">
+      <div class="card-h"><h2>Test bench</h2><p id="bench-sub">runs locally, no network</p></div>
+      <div class="card-b">
+        <div class="field">
+          <label for="probe">Type a message</label>
+          <textarea id="probe" placeholder="3 of us on the roof, water rising"></textarea>
+          <div class="hint">Enter to classify, Shift+Enter for a new line.</div>
+        </div>
+        <div class="actions">
+          <button class="btn" id="run-probe">Classify</button>
+        </div>
+        <div class="chips" id="chips"></div>
+        <div id="verdict"></div>
+        <div class="err-box" id="probe-err"></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ---------- measurements ---------- -->
+  <section class="card sec">
+    <div class="card-h">
+      <h2>Measurements</h2>
+      <p id="meas-sub">held-out set</p>
+      <div style="margin-left:auto; display:flex; gap:8px; align-items:center">
+        <select id="wild"></select>
+        <button class="btn ghost" id="run-wild">Score a wild set</button>
+      </div>
+    </div>
+    <div class="stats" id="stats"></div>
+    <div class="card-b">
+      <div id="per-class"></div>
+      <div class="sec" id="cm-wrap"></div>
+      <div class="sec" id="miss-wrap"></div>
+      <div class="err-box" id="meas-err"></div>
+    </div>
+  </section>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const pct = v => (v * 100).toFixed(1) + '%';
+let TASK = null, LABELS = [];
+
+async function api(path, opts) {
+  const res = await fetch(path, opts);
+  const body = await res.json().catch(() => ({ error: 'server sent a non-JSON reply' }));
+  if (!res.ok) throw new Error(body.error || ('request failed: ' + res.status));
+  return body;
+}
+function showErr(id, msg) { $(id).textContent = msg || ''; }
+
+/* ---- network indicator: the offline demo is the point, so surface it ---- */
+function paintNet() {
+  const on = navigator.onLine;
+  $('net').innerHTML = `<span class="dot ${on ? '' : 'off'}"></span><b>${on ? 'network on' : 'network off'}</b>`;
+  $('bench-sub').textContent = on ? 'runs locally, no network' : 'network is off — still working';
+  $('cast').disabled = !on;
+  $('cast-note').textContent = on ? 'Needs a network and an API key.' : 'Casting needs a network. The bench does not.';
+}
+addEventListener('online', paintNet); addEventListener('offline', paintNet);
+
+/* ---- tasks ---- */
+async function loadTasks(select) {
+  const data = await api('/api/tasks');
+  const sel = $('task');
+  sel.innerHTML = '';
+  data.tasks.forEach(t => {
+    const o = document.createElement('option');
+    o.value = t.slug;
+    o.textContent = `${t.task_name.replace(/_/g, ' ')} · ${t.num_classes} classes`;
+    sel.appendChild(o);
+  });
+  const wild = $('wild');
+  wild.innerHTML = '';
+  data.wild_files.forEach(f => {
+    const o = document.createElement('option');
+    o.value = f; o.textContent = f;
+    wild.appendChild(o);
+  });
+  $('run-wild').disabled = data.wild_files.length === 0;
+  if (data.tasks.length) {
+    sel.value = select && data.tasks.some(t => t.slug === select) ? select : data.tasks[0].slug;
+    await loadTask(sel.value);
+  }
+}
+
+async function loadTask(slug) {
+  TASK = slug;
+  showErr('meas-err', '');
+  const t = await api('/api/task/' + slug);
+  LABELS = t.labels;
+  $('chips').innerHTML = '';
+  ['3 of us on the roof, water rising', 'paani bahut zyada hai, help karo',
+   'road blocked by fallen trees', 'thanks to all the volunteers']
+    .forEach(s => {
+      const c = document.createElement('button');
+      c.className = 'chip'; c.textContent = s;
+      c.onclick = () => { $('probe').value = s; probe(); };
+      $('chips').appendChild(c);
+    });
+  $('verdict').innerHTML = '';
+  if (!t.has_artifact) {
+    $('stats').innerHTML = '<div class="stat"><div class="k">No artifact yet</div><div class="s">cast a model first</div></div>';
+    $('per-class').innerHTML = ''; $('cm-wrap').innerHTML = ''; $('miss-wrap').innerHTML = '';
+    return;
+  }
+  $('meas-sub').textContent = `held-out set · ${t.n_test} examples · trained on ${t.n_train}`;
+  paintMetrics(t.test_metrics, t.artifact_kb);
+}
+
+/* ---- metrics ---- */
+function paintMetrics(m, kb) {
+  $('stats').innerHTML = `
+    <div class="stat"><div class="k">Accuracy</div><div class="v">${pct(m.accuracy)}</div><div class="s">${m.n} examples</div></div>
+    <div class="stat"><div class="k">Macro F1</div><div class="v">${m.macro_f1.toFixed(3)}</div><div class="s">unweighted</div></div>
+    <div class="stat"><div class="k">Latency</div><div class="v">${m.median_latency_ms.toFixed(2)}<span style="font-size:12px"> ms</span></div><div class="s">median, on device</div></div>
+    <div class="stat"><div class="k">Artifact</div><div class="v">${kb ? kb.toFixed(0) : '—'}<span style="font-size:12px"> KB</span></div><div class="s">stdlib only</div></div>`;
+
+  let rows = '';
+  m.labels.forEach((n, i) => {
+    const r = m.recall[i], cls = r === 1 ? 'perfect' : (r < 0.9 ? 'weak' : '');
+    rows += `<tr><td class="lab">${n}</td>
+      <td class="num">${m.precision[i].toFixed(3)}</td>
+      <td class="num ${cls}">${r.toFixed(3)}</td>
+      <td class="num">${m.support[i]}</td></tr>`;
+  });
+  $('per-class').innerHTML = `
+    <div class="sec-h"><h3>Per class</h3><span>recall below 0.90 marked</span></div>
+    <table><thead><tr><th>Label</th><th class="num">Precision</th><th class="num">Recall</th><th class="num">Support</th></tr></thead>
+    <tbody>${rows}</tbody></table>`;
+
+  let head = '<tr><th></th>' + m.labels.map((_, i) => `<th>p${i}</th>`).join('') + '</tr>';
+  let body = '';
+  m.confusion.forEach((row, i) => {
+    body += `<tr><th class="rowh">${m.labels[i]}</th>` + row.map((v, j) =>
+      `<td class="${i === j ? 'diag' : (v ? 'err' : 'zero')}">${v}</td>`).join('') + '</tr>';
+  });
+  $('cm-wrap').innerHTML = `<div class="sec-h"><h3>Confusion</h3><span>rows true, columns predicted</span></div>
+    <table class="cm"><thead>${head}</thead><tbody>${body}</tbody></table>`;
+
+  if (m.misses.length) {
+    const items = m.misses.slice(0, 12).map(x =>
+      `<li><span class="t">${esc(x.text)}</span><span class="m">was <b>${x.predicted}</b>, should be ${x.gold}</span></li>`).join('');
+    $('miss-wrap').innerHTML = `<div class="sec-h"><h3>Misses</h3><span>${m.misses.length} of ${m.n}</span></div>
+      <ul class="miss-list">${items}</ul>`;
+  } else {
+    $('miss-wrap').innerHTML = `<div class="sec-h"><h3>Misses</h3><span>none</span></div>
+      <p class="empty">Every example in this set was classified correctly. On a set this size that is worth treating with suspicion, not celebration.</p>`;
+  }
+}
+function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+/* ---- bench ---- */
+async function probe() {
+  const text = $('probe').value.trim();
+  showErr('probe-err', '');
+  if (!text) return;
+  try {
+    const r = await api('/api/classify', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ task: TASK, text })
+    });
+    const bars = r.ranked.map((x, i) => `
+      <div class="bar ${i === 0 ? 'top' : ''}">
+        <div class="track"><div class="fill" style="width:${Math.max(x.p * 100, 1.5)}%"></div>
+        <span class="name">${x.label}</span></div>
+        <span class="pct">${pct(x.p)}</span>
+      </div>`).join('');
+    $('verdict').innerHTML = `<div class="verdict on">
+      <div class="verdict-top"><span class="lab">${r.label}</span>
+      <span class="meta">${r.latency_ms.toFixed(2)} ms · on device</span></div>
+      <div class="bars">${bars}</div></div>`;
+  } catch (e) { showErr('probe-err', e.message); }
+}
+$('run-probe').onclick = probe;
+$('probe').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); probe(); }
+});
+
+/* ---- wild ---- */
+$('run-wild').onclick = async () => {
+  const file = $('wild').value;
+  showErr('meas-err', '');
+  if (!file) return;
+  try {
+    const m = await api(`/api/wild/${TASK}/${encodeURIComponent(file)}`);
+    $('meas-sub').textContent = `${file} · ${m.n} examples · written outside the pipeline`;
+    paintMetrics(m, null);
+  } catch (e) { showErr('meas-err', e.message); }
+};
+
+/* ---- cast ---- */
+function setStage(i) {
+  document.querySelectorAll('#rail li').forEach(li => {
+    const s = +li.dataset.s;
+    li.classList.toggle('done', s < i);
+    li.classList.toggle('active', s === i);
+    li.querySelector('.pulse')?.remove();
+    if (s === i) { const d = document.createElement('span'); d.className = 'pulse'; li.appendChild(d); }
+    if (s < i && !li.querySelector('.tick')) {
+      const t = document.createElement('span'); t.className = 'tick'; t.textContent = 'set'; li.appendChild(t);
+    }
+  });
+}
+function clearRail() {
+  document.querySelectorAll('#rail li').forEach(li => {
+    li.className = ''; li.querySelector('.pulse')?.remove(); li.querySelector('.tick')?.remove();
+  });
+}
+
+$('cast').onclick = async () => {
+  const need = $('need').value.trim() || $('need').placeholder;
+  showErr('cast-err', '');
+  clearRail(); $('log').textContent = '';
+  $('cast').disabled = true; $('cast').textContent = 'Casting…';
+
+  try {
+    const res = await fetch('/api/build', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ need, n_train: +$('ntrain').value, n_test: +$('ntest').value })
+    });
+    if (!res.ok) throw new Error((await res.json()).error || 'build refused to start');
+
+    const reader = res.body.getReader(), dec = new TextDecoder();
+    let buf = '';
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buf += dec.decode(value, { stream: true });
+      const parts = buf.split('\n\n'); buf = parts.pop();
+      for (const p of parts) {
+        const kind = (p.match(/^event: (.+)$/m) || [])[1];
+        const data = JSON.parse((p.match(/^data: (.+)$/m) || [, '{}'])[1]);
+        if (kind === 'log') {
+          $('log').textContent += data.line + '\n';
+          $('log').scrollTop = $('log').scrollHeight;
+        } else if (kind === 'stage') {
+          setStage(data.index);
+        } else if (kind === 'done') {
+          setStage(6);
+          await loadTasks(data.slug);
+          $('log').textContent += `\ncast in ${data.seconds}s\n`;
+        } else if (kind === 'failed') {
+          showErr('cast-err', `Build stopped after ${data.seconds ?? '?'}s. The log above has the traceback.`);
+          clearRail();
+        }
+      }
+    }
+  } catch (e) {
+    showErr('cast-err', e.message);
+    clearRail();
+  } finally {
+    $('cast').disabled = false; $('cast').textContent = 'Cast model'; paintNet();
+  }
+};
+
+$('task').onchange = e => loadTask(e.target.value).catch(err => showErr('meas-err', err.message));
+
+paintNet();
+loadTasks().catch(e => showErr('meas-err', e.message));
+</script>
+</body>
+</html>

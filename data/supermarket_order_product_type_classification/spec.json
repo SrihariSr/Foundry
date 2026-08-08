@@ -1,0 +1,78 @@
+{
+  "task_name": "supermarket_order_product_type_classification",
+  "num_classes": 6,
+  "labels": [
+    {
+      "name": "fresh_produce_and_perishables",
+      "definition": "Orders primarily requesting fresh fruits, vegetables, meat, fish, dairy, eggs, or bakery items that require refrigeration or spoil quickly.",
+      "examples_of_edge_cases": [
+        "need 2kg tomatoes, a dozen eggs, and fresh basil",
+        "can you get me a rotisserie chicken and some sliced deli ham",
+        "just want a loaf of the bakery sourdough, still warm if possible",
+        "frozen shrimp and a bag of frozen peas please"
+      ]
+    },
+    {
+      "name": "pantry_and_packaged_goods",
+      "definition": "Orders for shelf-stable groceries such as canned goods, dry pasta, rice, cereal, snacks, condiments, and beverages including soda, juice, coffee, and alcohol.",
+      "examples_of_edge_cases": [
+        "2 cans of chickpeas, a bag of basmati rice, and some olive oil",
+        "grab me a case of sparkling water and a bottle of red wine",
+        "protein bars, almonds, and instant oatmeal packets",
+        "is the peanut butter on sale, get 2 jars if so"
+      ]
+    },
+    {
+      "name": "household_and_cleaning",
+      "definition": "Orders for non-food home maintenance items like cleaning sprays, laundry detergent, paper towels, toilet paper, trash bags, and light bulbs.",
+      "examples_of_edge_cases": [
+        "out of dish soap and need more sponges too",
+        "pick up a pack of AA batteries and some tin foil",
+        "need bleach, but not the scented kind, just regular",
+        "toilet paper is almost out, get the big pack"
+      ]
+    },
+    {
+      "name": "personal_care_and_health",
+      "definition": "Orders for toiletries, cosmetics, over-the-counter medicine, vitamins, and hygiene products intended for personal use on the body.",
+      "examples_of_edge_cases": [
+        "need shampoo and also some ibuprofen for a headache",
+        "can you grab feminine pads and a new toothbrush",
+        "get the allergy medicine, the non-drowsy one",
+        "sunscreen SPF 50 and after-sun lotion please"
+      ]
+    },
+    {
+      "name": "baby_and_pet_supplies",
+      "definition": "Orders for products intended for infants/toddlers or household pets, including diapers, baby formula, pet food, litter, and pet treats.",
+      "examples_of_edge_cases": [
+        "size 4 diapers and a tub of baby wipes",
+        "the cat litter we usually get, unscented",
+        "dog food, the salmon flavor 15lb bag",
+        "need baby formula, the sensitive stomach kind"
+      ]
+    },
+    {
+      "name": "mixed_or_unspecified",
+      "definition": "Orders that span multiple product categories with no single dominant type, or that are too vague/incomplete to assign to any specific category above.",
+      "examples_of_edge_cases": [
+        "just get whatever's needed for the week, you know what we usually buy",
+        "milk, toilet paper, dog food, and some apples",
+        "pick up stuff for dinner tonight, surprise me",
+        "same order as last time please"
+      ]
+    }
+  ],
+  "generation_personas": [
+    "A busy working mother in her 30s texting quick grocery requests to her partner from her phone during lunch breaks, using abbreviations and no punctuation",
+    "An elderly retiree who dictates orders to a grocery delivery hotline over the phone, speaking in full formal sentences with occasional repetition and second-guessing",
+    "A college student ordering groceries via an app for the first time, casual tone, lots of slang, sometimes unsure of exact product names or brands",
+    "A professional chef restocking supplies for a small restaurant, writing precise, detailed orders with quantities and specific brand/cut preferences",
+    "A non-native English speaker who recently immigrated, writing simple broken-English sentences with some grammar mistakes but clear intent",
+    "A tech-savvy teenager ordering snacks and personal care items for themselves via a delivery app, using emojis and very short fragments",
+    "A pet owner and new parent juggling both baby and dog needs, writing rushed, run-on messages combining multiple categories at once",
+    "A frugal budget-conscious shopper who mentions prices, coupons, and asks for cheaper alternatives, writing in a somewhat anxious, detail-oriented tone",
+    "A person with limited literacy dictating a voice-to-text order that comes out with odd phrasing, missing words, and unconventional spelling",
+    "An office manager ordering bulk household and pantry supplies for a workplace break room, writing in a brisk, businesslike email format"
+  ]
+}
