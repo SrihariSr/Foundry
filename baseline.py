@@ -23,6 +23,27 @@ MAX_TOKENS = 64
 SERIAL_TIMING_N = 10
 SEED = 0
 
+# USD per million tokens for claude-haiku-4-5.
+# Source: https://www.anthropic.com/claude/haiku, 8 August 2026, as recorded in
+# CLAUDE.md. Never change these from memory; re-verify from that URL.
+PRICE_PER_MTOK_INPUT = 1.00
+PRICE_PER_MTOK_OUTPUT = 5.00
+
+# Prompt caching and batch multipliers, relative to the base input price.
+# Source: https://docs.claude.com/en/docs/build-with-claude/prompt-caching
+# (302-redirects to platform.claude.com/docs/en/build-with-claude/prompt-caching),
+# verified 2026-08-08: "5-minute cache write tokens are 1.25 times the base
+# input tokens price", "Cache read tokens are 0.1 times the base input tokens
+# price". Batch API is a 50% discount on input and output, same source.
+CACHE_WRITE_MULTIPLIER = 1.25
+CACHE_READ_MULTIPLIER = 0.10
+BATCH_MULTIPLIER = 0.50
+
+# Minimum cacheable prompt length for claude-haiku-4-5, same source, verified
+# 2026-08-08. Below this a cache_control block is ignored with no error and both
+# usage cache fields come back 0. Reported, never worked around.
+MIN_CACHEABLE_TOKENS = 4096
+
 SYSTEM_TEMPLATE = """You are a text classifier.
 
 Labels:
@@ -38,10 +59,14 @@ def build_system_prompt(spec):
 
 
 def classify_one(client, system_prompt, text):
-    """Return (reply_text, input_tokens, output_tokens, seconds).
+    """Return a dict of reply, the four token categories, and seconds.
 
     Retries at most MAX_RETRIES times on API error. A reply that is not a label
     name is NOT an API error and is never retried.
+
+    The system prompt is identical on every call in a run, so it carries a
+    cache_control breakpoint. Whether the cache actually engages is measured,
+    not assumed: see MIN_CACHEABLE_TOKENS.
     """
     start = time.perf_counter()
     last_error = None
@@ -50,7 +75,11 @@ def classify_one(client, system_prompt, text):
             response = client.messages.create(
                 model=MODEL,
                 max_tokens=MAX_TOKENS,
-                system=system_prompt,
+                system=[{
+                    "type": "text",
+                    "text": system_prompt,
+                    "cache_control": {"type": "ephemeral"},
+                }],
                 messages=[{"role": "user", "content": text}],
             )
         except anthropic.APIError as exc:
@@ -60,8 +89,15 @@ def classify_one(client, system_prompt, text):
             continue
 
         reply = "".join(b.text for b in response.content if b.type == "text")
-        elapsed = time.perf_counter() - start
-        return reply, response.usage.input_tokens, response.usage.output_tokens, elapsed
+        usage = response.usage
+        return {
+            "reply": reply,
+            "input_tokens": usage.input_tokens,
+            "output_tokens": usage.output_tokens,
+            "cache_creation": usage.cache_creation_input_tokens,
+            "cache_read": usage.cache_read_input_tokens,
+            "seconds": time.perf_counter() - start,
+        }
 
     raise RuntimeError(
         f"call failed after {MAX_RETRIES + 1} attempts: "
@@ -80,6 +116,10 @@ def run_baseline(spec, examples):
     latencies = [0.0] * len(examples)
     input_tokens = 0
     output_tokens = 0
+    cache_creation = 0
+    cache_read = 0
+    cache_write_calls = 0
+    cache_read_calls = 0
 
     with ThreadPoolExecutor(max_workers=CONCURRENCY) as pool:
         futures = {
@@ -88,13 +128,17 @@ def run_baseline(spec, examples):
         }
         for future in as_completed(futures):
             i = futures[future]
-            reply, in_tok, out_tok, elapsed = future.result()
-            input_tokens += in_tok
-            output_tokens += out_tok
-            latencies[i] = elapsed * 1000.0
+            call = future.result()
+            input_tokens += call["input_tokens"]
+            output_tokens += call["output_tokens"]
+            cache_creation += call["cache_creation"]
+            cache_read += call["cache_read"]
+            cache_write_calls += 1 if call["cache_creation"] else 0
+            cache_read_calls += 1 if call["cache_read"] else 0
+            latencies[i] = call["seconds"] * 1000.0
             # Strip transport whitespace only. Anything else that is not an
             # exact label name stays unparseable; it is never coerced.
-            stripped = reply.strip()
+            stripped = call["reply"].strip()
             replies[i] = stripped
             predictions[i] = name_to_index.get(stripped)
 
@@ -104,6 +148,11 @@ def run_baseline(spec, examples):
         "latencies": latencies,
         "input_tokens": input_tokens,
         "output_tokens": output_tokens,
+        "cache_creation": cache_creation,
+        "cache_read": cache_read,
+        "cache_write_calls": cache_write_calls,
+        "cache_read_calls": cache_read_calls,
+        "calls": len(examples),
     }
 
 
@@ -122,16 +171,22 @@ def time_serial(spec, examples, n=SERIAL_TIMING_N):
     latencies = []
     input_tokens = 0
     output_tokens = 0
+    cache_creation = 0
+    cache_read = 0
     for ex in sample:
-        _, in_tok, out_tok, elapsed = classify_one(client, system_prompt, ex["text"])
-        latencies.append(elapsed * 1000.0)
-        input_tokens += in_tok
-        output_tokens += out_tok
+        call = classify_one(client, system_prompt, ex["text"])
+        latencies.append(call["seconds"] * 1000.0)
+        input_tokens += call["input_tokens"]
+        output_tokens += call["output_tokens"]
+        cache_creation += call["cache_creation"]
+        cache_read += call["cache_read"]
 
     return {
         "latencies": latencies,
         "input_tokens": input_tokens,
         "output_tokens": output_tokens,
+        "cache_creation": cache_creation,
+        "cache_read": cache_read,
         "n": len(sample),
     }
 
@@ -185,6 +240,51 @@ def score(gold, predictions, num_classes):
         "unparseable_by_class": unparseable_by_class,
         "confusion_matrix": matrix,
     }
+
+
+def cost_usd(input_tokens, output_tokens, cache_creation=0, cache_read=0):
+    """Measured cost: each token category at its own multiplier."""
+    return (input_tokens * PRICE_PER_MTOK_INPUT
+            + cache_creation * PRICE_PER_MTOK_INPUT * CACHE_WRITE_MULTIPLIER
+            + cache_read * PRICE_PER_MTOK_INPUT * CACHE_READ_MULTIPLIER
+            + output_tokens * PRICE_PER_MTOK_OUTPUT) / 1_000_000
+
+
+def cost_uncached_usd(total_input_tokens, output_tokens):
+    """What the same traffic would cost with every input token at base price."""
+    return (total_input_tokens * PRICE_PER_MTOK_INPUT
+            + output_tokens * PRICE_PER_MTOK_OUTPUT) / 1_000_000
+
+
+def corpus_checkpoints(task_dir):
+    """Inspect raw_*.jsonl for persisted token usage. Never estimates.
+
+    generate.py writes only the parsed {text, label} items and discards the
+    response object, so usage is expected to be absent. This reports what is
+    actually on disk rather than assuming either way.
+    """
+    reports = []
+    for name in ("raw_A.jsonl", "raw_B.jsonl"):
+        path = os.path.join(task_dir, name)
+        if not os.path.exists(path):
+            reports.append({"name": name, "present": False})
+            continue
+        keys = set()
+        records = 0
+        with open(path) as f:
+            for line in f:
+                if not line.strip():
+                    continue
+                keys |= set(json.loads(line).keys())
+                records += 1
+        reports.append({
+            "name": name,
+            "present": True,
+            "records": records,
+            "keys": sorted(keys),
+            "has_usage": bool(keys & {"usage", "input_tokens", "output_tokens"}),
+        })
+    return reports
 
 
 def mcnemar_exact(gold, predictions_a, predictions_b):
@@ -300,15 +400,54 @@ def report(dataset_name, spec, examples, artifact):
           f"{statistics.median(serial_run['latencies']):>18.1f}")
     print(f"{concurrent_row:<{width}}{'-':>14}"
           f"{statistics.median(baseline_run['latencies']):>18.1f}")
-    print(f"{'input tokens':<{width}}{'-':>14}{baseline_run['input_tokens']:>18d}")
+    total_input = (baseline_run["input_tokens"] + baseline_run["cache_creation"]
+                   + baseline_run["cache_read"])
+    print(f"{'uncached input tokens':<{width}}{'-':>14}{baseline_run['input_tokens']:>18d}")
+    print(f"{'cache creation tokens':<{width}}{'-':>14}{baseline_run['cache_creation']:>18d}")
+    print(f"{'cache read tokens':<{width}}{'-':>14}{baseline_run['cache_read']:>18d}")
+    print(f"{'total input tokens':<{width}}{'-':>14}{total_input:>18d}")
     print(f"{'output tokens':<{width}}{'-':>14}{baseline_run['output_tokens']:>18d}")
     print(f"{'unparseable':<{width}}{artifact_scores['unparseable']:>14d}"
           f"{baseline_scores['unparseable']:>18d}")
+
+    hit_rate = baseline_run["cache_read"] / total_input if total_input else 0.0
     print()
+    print(f"observed cache hit rate: {hit_rate:.2%} "
+          f"({baseline_run['cache_read']} cache-read tokens of {total_input} total input)")
+    print(f"calls that wrote cache: {baseline_run['cache_write_calls']} of "
+          f"{baseline_run['calls']};  calls that read cache: "
+          f"{baseline_run['cache_read_calls']} of {baseline_run['calls']}")
+    if baseline_run["cache_creation"] == 0 and baseline_run["cache_read"] == 0:
+        print(f"cache did NOT engage. {MODEL} requires a {MIN_CACHEABLE_TOKENS}-token "
+              f"minimum for a cache_control block;")
+        print(f"this system prompt is far below it, so the breakpoint was ignored "
+              f"with no error returned.")
+
+    # The artifact makes no API calls, so its cost is exactly zero, not rounded.
+    measured = cost_usd(baseline_run["input_tokens"], baseline_run["output_tokens"],
+                        baseline_run["cache_creation"], baseline_run["cache_read"])
+    uncached = cost_uncached_usd(total_input, baseline_run["output_tokens"])
+    batch = uncached * BATCH_MULTIPLIER
+    scale = 1_000_000 / len(examples)
+    print()
+    print(f"{'cost mode':<{width}}{'this run (USD)':>16}{'per 1M (USD)':>16}")
+    print("-" * (width + 32))
+    print(f"{'uncached (all input at base price)':<{width}}{uncached:>16.6f}"
+          f"{uncached * scale:>16.2f}")
+    print(f"{'measured with caching':<{width}}{measured:>16.6f}"
+          f"{measured * scale:>16.2f}")
+    print(f"{'batch (50% of uncached)':<{width}}{batch:>16.6f}{batch * scale:>16.2f}")
+    print(f"{'artifact':<{width}}{'0':>16}{'0':>16}")
+    print()
+    print(f"prices: ${PRICE_PER_MTOK_INPUT:.2f}/Mtok in, "
+          f"${PRICE_PER_MTOK_OUTPUT:.2f}/Mtok out, cache write x"
+          f"{CACHE_WRITE_MULTIPLIER}, cache read x{CACHE_READ_MULTIPLIER} "
+          f"(constants at top of file)")
     print(f"serial row: {serial_run['n']} extra calls made one at a time after the "
           f"concurrent pass; predictions discarded,")
     print(f"            {serial_run['input_tokens']} in / {serial_run['output_tokens']} "
-          f"out tokens NOT included in the token rows above.")
+          f"out tokens NOT included in the token or cost rows above "
+          f"(${cost_usd(serial_run['input_tokens'], serial_run['output_tokens'], serial_run['cache_creation'], serial_run['cache_read']):.6f}).")
     print(f"artifact is measured serially in both cases, so it has no "
           f"concurrency-{CONCURRENCY} figure.")
     print()
@@ -374,6 +513,23 @@ def main():
     if args.wild:
         wild_examples = normalise_examples(load_json(args.wild), spec, args.wild)
         report(f"wild ({args.wild})", spec, wild_examples, artifact)
+
+    print("=== corpus generation cost ===")
+    checkpoints = corpus_checkpoints(args.task_dir)
+    for entry in checkpoints:
+        if not entry["present"]:
+            print(f"{entry['name']}: not present")
+        else:
+            print(f"{entry['name']}: {entry['records']} records, keys {entry['keys']}")
+
+    if any(entry.get("has_usage") for entry in checkpoints):
+        raise NotImplementedError(
+            "checkpoints contain usage keys; token totals are recoverable but "
+            "this code does not read them yet"
+        )
+    print("NOT RECOVERABLE: the checkpoints hold only the parsed items. generate.py")
+    print("discards the response object, so no usage was ever persisted for the")
+    print("corpus generation calls. Corpus generation cost is not estimated here.")
 
 
 if __name__ == "__main__":
