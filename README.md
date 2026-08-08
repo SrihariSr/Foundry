@@ -189,8 +189,12 @@ written outside the pipeline that the generator never saw.
 | Evaluation set | n | Provenance | Casting accuracy |
 | --- | --- | --- | --- |
 | `test_B` | 100 | generated, different seed | 0.9500 |
-| `wild_disaster.json` | 24 | model written, outside the pipeline | 0.9583 |
+| `wild_disaster.json` | 24 | written by Claude outside the pipeline, not by a human | 0.9167 |
 | `wild_human_disaster.json` | 10 | human written and human labelled | 0.6000 |
+
+`wild_disaster.json` shares a model family with the corpus generator, so it is
+weaker evidence than the human written set even though it scores higher. At 24
+examples one example moves accuracy by 4.2 points.
 
 The human set is the most honest of the three and also the least reliable, at
 ten examples. One example moves accuracy by ten points. Two of its four failures

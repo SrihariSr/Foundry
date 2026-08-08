@@ -1,0 +1,31 @@
+[
+  {"text": "second floor now, stairs are underwater, me and my two boys cant get out", "label": "urgent_rescue_needed"},
+  {"text": "TRAPPED IN THE BASEMENT DOOR WONT OPEN WATER COMING IN FAST", "label": "urgent_rescue_needed"},
+  {"text": "car is stuck in the culvert on mill lane, water past the windows, im sitting on the roof of it", "label": "urgent_rescue_needed"},
+  {"text": "landslide came down behind our house, my husband is pinned under the beams in the shed", "label": "urgent_rescue_needed"},
+
+  {"text": "grandmother collapsed at the shelter, shes breathing but wont wake up", "label": "medical_emergency"},
+  {"text": "deep cut on my leg from the debris, bleeding through the towel already, need someone", "label": "medical_emergency"},
+  {"text": "my son is asthmatic and his inhaler is finished, he has been wheezing badly since morning", "label": "medical_emergency"},
+  {"text": "pregnant lady here having contractions five minutes apart, no vehicle can reach us", "label": "medical_emergency"},
+
+  {"text": "we are twelve families in the school hall and there has been no drinking water since yesterday", "label": "resource_request"},
+  {"text": "need baby formula and diapers, shop is shut, anyone", "label": "resource_request"},
+  {"text": "out of insulin, pharmacy on the main road is closed, is there a supply point somewhere", "label": "resource_request"},
+  {"text": "blankets please, the kids are shivering, we are at the temple ground", "label": "resource_request"},
+
+  {"text": "electric pole leaning right over the road near the petrol pump, wires touching the ground", "label": "infrastructure_hazard_report"},
+  {"text": "bridge on the canal road has cracked down the middle, dont send trucks that way", "label": "infrastructure_hazard_report"},
+  {"text": "strong gas smell around the market lane, no one hurt yet but it keeps getting worse", "label": "infrastructure_hazard_report"},
+  {"text": "the retaining wall behind the flats is bulging out, looks like it will give way soon", "label": "infrastructure_hazard_report"},
+
+  {"text": "my brother went to move the cattle at 6am and hasnt come back, his phone is off", "label": "missing_person"},
+  {"text": "looking for Meena, eight years old, she was with us at the crossing before the crowd moved", "label": "missing_person"},
+  {"text": "anyone seen an old man in a blue shirt near the bus stand, he has dementia and wandered off", "label": "missing_person"},
+  {"text": "my wife left for the shop just before the wall collapsed and I cannot reach her since", "label": "missing_person"},
+
+  {"text": "thank you to the rescue team, you people are absolute angels", "label": "non_actionable"},
+  {"text": "is the water going to rise more tonight? someone was saying it will", "label": "non_actionable"},
+  {"text": "why is nobody talking about how badly this whole thing was managed", "label": "non_actionable"},
+  {"text": "signal is finally back, testing testing", "label": "non_actionable"}
+]
