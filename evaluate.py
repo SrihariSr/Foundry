@@ -1,5 +1,6 @@
 """Metrics, confusion matrix, learning curve."""
 
+import argparse
 import json
 import os
 import random
@@ -95,10 +96,10 @@ def load_json(path):
         return json.load(f)
 
 
-def main():
-    spec = load_json(os.path.join(DATA_DIR, "spec.json"))
-    train_examples = load_json(os.path.join(DATA_DIR, "train_A.json"))
-    test_examples = load_json(os.path.join(DATA_DIR, "test_B.json"))
+def main(task_dir):
+    spec = load_json(os.path.join(task_dir, "spec.json"))
+    train_examples = load_json(os.path.join(task_dir, "train_A.json"))
+    test_examples = load_json(os.path.join(task_dir, "test_B.json"))
 
     print(f"task: {spec['task_name']}  num_classes: {spec['num_classes']}")
     for i, label in enumerate(spec["labels"]):
@@ -116,4 +117,6 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description="Learning curve for a task directory.")
+    parser.add_argument("task_dir", help="directory holding spec.json, train_A.json, test_B.json")
+    main(parser.parse_args().task_dir)
