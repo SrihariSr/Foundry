@@ -1,0 +1,41 @@
+[
+ {"text": "3 of us in roof, water full.",
+  "label": "urgent_rescue_needed",
+  "notes": "clear"},
+
+ {"text": "Amma is diabetic and no food available.",
+  "label": "resource_request",
+  "notes": "AMBIGUOUS - decide yourself. No acute symptom stated, so I read it as a food request with medical context. Arguable as medical_emergency."},
+
+ {"text": "Water is in the house, help pls",
+  "label": "urgent_rescue_needed",
+  "notes": "depth unstated; 'help pls' tips it to rescue"},
+
+ {"text": "paani bahut zyada hai, help karo",
+  "label": "urgent_rescue_needed",
+  "notes": "romanised Hindi"},
+
+ {"text": "SOMEONE HELP ROOF IS GOING TO FALL",
+  "label": "urgent_rescue_needed",
+  "notes": "AMBIGUOUS - decide yourself. Person is under the collapsing structure, so rescue over hazard report. Arguable as infrastructure_hazard_report."},
+
+ {"text": "We have a small problem, water is has entered the house, please send help at the earliest. Thank you.",
+  "label": "urgent_rescue_needed",
+  "notes": "understatement register; polite framing hides urgency"},
+
+ {"text": "Hello sir, I wanted to ask if you are free, my father has not been breathing properly since last night.",
+  "label": "medical_emergency",
+  "notes": "politeness scaffolding burying the ask"},
+
+ {"text": "my neighbour aunty ko bol rahi hai ki uske husband ko chest pain hai, please help",
+  "label": "medical_emergency",
+  "notes": "relayed third-hand"},
+
+ {"text": "छत पर हैं, पानी बढ़ रहा है",
+  "label": "urgent_rescue_needed",
+  "notes": "Devanagari script"},
+
+ {"text": "hum log ready hain but पानी बहुत है",
+  "label": "non_actionable",
+  "notes": "AMBIGUOUS - decide yourself. 'ready' for what is unclear; no explicit ask. Arguable as urgent_rescue_needed. Trailing quote mark stripped from original."}
+]
