@@ -16,27 +16,39 @@ python3 run.py --need "Triage incoming disaster messages from the public into wh
 
 ## Results
 
-Two tasks, built from the same pipeline with nothing changed but the input
+Three tasks, built from the same pipeline with nothing changed but the input
 sentence. Every figure below is measured, not estimated.
 
-| | Disaster triage (6 classes) | SMS intent (4 classes) |
-| --- | --- | --- |
-| Casting accuracy, held out | 0.9500 | 1.0000 |
-| Casting macro F1 | 0.9514 | 1.0000 |
-| Haiku 4.5 zero shot, same set | 0.9700 | 0.9800 |
-| Casting latency, median | 2.34 ms | 2.26 ms |
-| Haiku latency, median serial | 842 ms | 783 ms |
-| Cost per 1M classifications | 0 USD | 0 USD |
-| Haiku cost per 1M | 351.95 USD | 329.32 USD |
-| Casting size | 691 KB | 690 KB |
-| Training examples | 4000 | 3980 |
+| | Disaster triage (6 classes) | SMS intent (4 classes) | Supermarket order type (6 classes) |
+| --- | --- | --- | --- |
+| Casting accuracy, held out | 0.9500 | 1.0000 | 0.9400 |
+| Casting macro F1 | 0.9514 | 1.0000 | 0.9261 |
+| Haiku 4.5 zero shot, same set | 0.9700 | 0.9800 | not measured |
+| Casting latency, median, Apple M4 Max | 2.4 ms | 2.3 ms | 2.6 ms |
+| Haiku latency, median serial | 842 ms | 783 ms | not measured |
+| Cost per 1M classifications | 0 USD | 0 USD | 0 USD |
+| Haiku cost per 1M | 351.95 USD | 329.32 USD | not measured |
+| Casting size | 691 KB | 690 KB | 691 KB |
+| Training examples | 4000 | 3980 | 3998 |
+| Held out examples | 100 | 100 | 100 |
 
-Haiku accuracy moves between 0.97 and 0.98 across repeat runs on the same set.
-The casting is deterministic and returns the same answer every time.
+The third task was built through the browser interface with no code changes,
+only a different input sentence.
+
+All three tasks requested 4000 training examples. The counts differ because
+generate.py deduplicates on normalised text and reports the drop rather than
+backfilling. Each casting is compared against Claude on its own held out set, so
+the training sizes do not need to match for that comparison to hold.
+
+Latencies are medians of 1000 classifications on an Apple M4 Max and move by a
+few tenths of a millisecond between runs, so they are given to one decimal
+place. Haiku accuracy moves between 0.97 and 0.98 across repeat runs on the same
+set. The casting is deterministic and returns the same answer every time.
 
 ### Against its teacher
 
-Pooled across both tasks, 200 held out examples: the casting gets 195 correct,
+Pooled across the two tasks with a baseline run, 200 held out examples: the
+casting gets 195 correct,
 Haiku zero shot gets 195. Discordant pairs split four and four, so McNemar's
 exact test gives p = 1.0.
 
@@ -50,20 +62,25 @@ large difference, not a small one.
 Accuracy against training set size, evaluated on the same fixed held out set,
 same seed, so size is the only variable.
 
-| Training examples | Disaster accuracy | SMS accuracy |
-| --- | --- | --- |
-| 50 | 0.4700 | 0.9300 |
-| 200 | 0.9000 | 0.9800 |
-| 1000 | 0.9400 | 0.9900 |
-| full | 0.9500 | 1.0000 |
+| Training examples | Disaster accuracy | SMS accuracy | Supermarket accuracy |
+| --- | --- | --- | --- |
+| 50 | 0.4700 | 0.9300 | 0.5200 |
+| 200 | 0.9000 | 0.9800 | 0.8600 |
+| 1000 | 0.9400 | 0.9900 | 0.9100 |
+| full | 0.9500 | 1.0000 | 0.9400 |
+
+The full row is the whole deduplicated pool: 4000 disaster, 3980 SMS, 3998
+supermarket. A requested size larger than the pool is clamped to the pool and
+evaluate.py prints the size it actually used.
 
 Fifty examples is roughly what one person can hand label in an hour.
 
-The two curves say different things and both are worth reporting. On the four
+The curves say different things and all three are worth reporting. On the four
 class SMS task with clean separation, fifty examples already gets 93 per cent
 and a generated corpus adds little. On the six class disaster task with
-overlapping label boundaries, the gap is 48 points. The value of the data layer
-scales with how hard the task is.
+overlapping label boundaries, the gap is 48 points, and on the six class
+supermarket task it is 42. The value of the data layer scales with how hard the
+task is.
 
 ---
 
