@@ -1,0 +1,402 @@
+[
+  {
+    "text": "my wife Rosa she was at the market on Juniper when the building fell down, hasnt called me back",
+    "label": 4
+  },
+  {
+    "text": "basement is filling with water fast, cant get the door open, please hurry",
+    "label": 0
+  },
+  {
+    "text": "there is a beep beep sound coming from the gas line near the park, very dangerous condition",
+    "label": 3
+  },
+  {
+    "text": "my heart is racing very fast and I cannot catch my breath, something is very wrong with me",
+    "label": 1
+  },
+  {
+    "text": "we need blankets and warm clothes, have nothing left after the storm took everything",
+    "label": 2
+  },
+  {
+    "text": "thank God the nurses are helping people, what a blessing for this community",
+    "label": 5
+  },
+  {
+    "text": "my grandson he was supposed to meet me at the station, no word from him since this morning",
+    "label": 4
+  },
+  {
+    "text": "three people are stuck under the debris from the warehouse roof, urgent help needed now",
+    "label": 0
+  },
+  {
+    "text": "the medication I take for my heart, I have only two pills left, pharmacy is closed, bahut important",
+    "label": 2
+  },
+  {
+    "text": "large power lines are on the ground sparking near the school, is this very dangerous",
+    "label": 3
+  },
+  {
+    "text": "my neighbor Mrs Chen she fell and hit her head, bleeding from her ear, we cannot reach the doctor",
+    "label": 1
+  },
+  {
+    "text": "I have lived here seventy years and never seen such a disaster, hoping for the best",
+    "label": 5
+  },
+  {
+    "text": "my car rolled into the ravine and I am still inside, water is coming in please get me",
+    "label": 0
+  },
+  {
+    "text": "do you have any diabetic supplies and food items available for distribution",
+    "label": 2
+  },
+  {
+    "text": "bridge has a large sinkhole forming in the middle, very unsafe for the traffic to cross",
+    "label": 3
+  },
+  {
+    "text": "my brother went to check on his house yesterday morning and we haven't heard anything since then",
+    "label": 4
+  },
+  {
+    "text": "I breathed a lot of smoke and now my lungs hurt when I try to breathe, is this normal",
+    "label": 1
+  },
+  {
+    "text": "the old theater on Main Street has its walls cracked and leaning, looks like it might fall",
+    "label": 3
+  },
+  {
+    "text": "we are six people in one small room with no food or clean water, bahat zaroorat hai help",
+    "label": 2
+  },
+  {
+    "text": "so many people have lost their homes, this is just heartbreaking news for everyone",
+    "label": 5
+  },
+  {
+    "text": "HELP!! stuck in basement of the Riverside Inn, water pouring in, cant find the door!!",
+    "label": 0
+  },
+  {
+    "text": "mom having really bad chest pains wont go to hospital, someone help me convince her",
+    "label": 1
+  },
+  {
+    "text": "we're out of baby formula and shops r closed, does anyone have any??? #SOS",
+    "label": 2
+  },
+  {
+    "text": "massive tree down on powerlines at junction St, sparking like crazy, pls send someone",
+    "label": 3
+  },
+  {
+    "text": "havent seen my brother since yesterday morning near the park, hes 16, anyone seen him??",
+    "label": 4
+  },
+  {
+    "text": "honestly this disaster brought ppl together, feeling hopeful despite everything",
+    "label": 5
+  },
+  {
+    "text": "2 ppl under the collapsed garage on Elm Ave cant move cant breathe URGENT",
+    "label": 0
+  },
+  {
+    "text": "my roommate got badly burned on her arm from the fire, shell lose some skin",
+    "label": 1
+  },
+  {
+    "text": "no power for 3 days, fridge empty, got 2 kids to feed, anyone distributing food today?",
+    "label": 2
+  },
+  {
+    "text": "gas smell really strong near the market, called it in but wanted to warn ppl here too",
+    "label": 3
+  },
+  {
+    "text": "my cat went missing during the evacuation, shes orange w/ white paws, plzzz help me find her",
+    "label": 4
+  },
+  {
+    "text": "cant believe how fast the water came up, nature is insane #wildweather",
+    "label": 5
+  },
+  {
+    "text": "PLEASE my grandpa is on the second floor and the stairs are gone, he cant get down!!",
+    "label": 0
+  },
+  {
+    "text": "neighbor got cut really deep on metal debris, bleeding wont stop, what do i do",
+    "label": 1
+  },
+  {
+    "text": "medications ran out, diabetic, pharmacies closed, need insulin asap, desperate",
+    "label": 2
+  },
+  {
+    "text": "whole section of the bridge looks cracked, unsafe to cross, cars still trying to drive it",
+    "label": 3
+  },
+  {
+    "text": "looking for elderly woman named Rita, left the shelter confused yesterday, red jacket",
+    "label": 4
+  },
+  {
+    "text": "so grateful for the volunteers handing out water this morning, you guys r amazing!",
+    "label": 5
+  },
+  {
+    "text": "car sinking in the flooded creek near the overpass, im still in it HELP NOW",
+    "label": 0
+  },
+  {
+    "text": "dizzy and coughing after breathing all that smoke, is this normal or should i get checked",
+    "label": 1
+  },
+  {
+    "text": "Cattle herd trapped in flooded pasture south of Ridge Road, water still rising, animals cannot escape.",
+    "label": 0
+  },
+  {
+    "text": "Farm equipment operator suffered severe laceration on left arm from machinery, bleeding heavily, requesting immediate medical assistance.",
+    "label": 1
+  },
+  {
+    "text": "Requesting delivery of livestock feed and fresh water supplies to the county fairgrounds shelter for displaced animals.",
+    "label": 2
+  },
+  {
+    "text": "Main irrigation canal has structural breach at mile marker seven, creating erosion hazard and threatening adjacent properties.",
+    "label": 3
+  },
+  {
+    "text": "My son has not made contact since the storm reached the western ridge where he was checking on grazing animals.",
+    "label": 4
+  },
+  {
+    "text": "Grateful acknowledgment of emergency services coordinating livestock evacuation procedures in our district.",
+    "label": 5
+  },
+  {
+    "text": "Farmhand trapped in barn loft as floodwater rises through first floor, unable to reach exit safely.",
+    "label": 0
+  },
+  {
+    "text": "Worker experienced sudden loss of consciousness in grain storage facility, appears unresponsive to voice commands.",
+    "label": 1
+  },
+  {
+    "text": "Require insulin delivery and prescription refill for diabetic family member, all pharmacies currently closed.",
+    "label": 2
+  },
+  {
+    "text": "Electrical transformer exploded near the northern access gate, creating fire hazard in surrounding brush.",
+    "label": 3
+  },
+  {
+    "text": "Cannot locate elderly hired hand who departed toward the eastern fields before communications were disrupted.",
+    "label": 4
+  },
+  {
+    "text": "The resilience shown by neighboring farming communities in this disaster is truly remarkable.",
+    "label": 5
+  },
+  {
+    "text": "Three dairy cattle remain stranded on the hillside island, completely surrounded by moving water with no dry passage.",
+    "label": 0
+  },
+  {
+    "text": "Farmer suffered deep puncture wound to foot from debris, infection risk increasing without medical evaluation.",
+    "label": 1
+  },
+  {
+    "text": "Seeking shelter accommodation for ten displaced farm workers whose housing was damaged.",
+    "label": 2
+  },
+  {
+    "text": "Collapsed fence section has exposed live electrical fencing to adjacent public access route, immediate hazard.",
+    "label": 3
+  },
+  {
+    "text": "Family members have not responded to contact attempts since evacuation orders were issued for the basin area.",
+    "label": 4
+  },
+  {
+    "text": "The community spirit demonstrated by volunteer responders has been exceptional throughout this event.",
+    "label": 5
+  },
+  {
+    "text": "Partner stuck in equipment shed as water breaches the north wall, cannot unlatch the door from inside.",
+    "label": 0
+  },
+  {
+    "text": "Request emergency propane delivery to restore heating capability for livestock shelter facilities.",
+    "label": 2
+  },
+  {
+    "text": "omg heard some ppl saying theres a gas leak on broadwy??? like massive explosion risk supposedly lol",
+    "label": 3
+  },
+  {
+    "text": "nah fr fr my cousins frnd said there r ppl stuck in the subwy tunnels but idk if thts real or just bs",
+    "label": 0
+  },
+  {
+    "text": "yo did u see that vid of the bridge literally CRACKING?? like no one go there apparently its abt 2 collapse",
+    "label": 3
+  },
+  {
+    "text": "cant believe ppl actually lost everythng... thoughts n prayers 4 everyone going thru this rn \u2764\ufe0f",
+    "label": 5
+  },
+  {
+    "text": "someone on reddit said their dog went missing during evac nd they havent found him yet... hope he shows up soon",
+    "label": 4
+  },
+  {
+    "text": "heard the hospital is running out of meds?? like they ran out of insulin or smth nd ppl need it ASAP",
+    "label": 2
+  },
+  {
+    "text": "bro the whole neighborhood got flooded liek water is up 2 the roofs... ppl literally cant leave!!!",
+    "label": 0
+  },
+  {
+    "text": "wait r the power lines still down on the east side??? saw some sparks earlier n its lowkey scary",
+    "label": 3
+  },
+  {
+    "text": "my gfs aunt hasnt been reachd since the evac started... shes supposed 2 be at her sisters place but no answer",
+    "label": 4
+  },
+  {
+    "text": "ppl r saying theres no clean water 4 days now... kids getting sick from drinking dirty stuff omg",
+    "label": 2
+  },
+  {
+    "text": "heard some guy had a hart attack during the chaos nd ambulances r backed up 4 hours wtf",
+    "label": 1
+  },
+  {
+    "text": "yo there might b a whole family traped in their basment?? wall collapsed apparently sumwhere in the north district",
+    "label": 0
+  },
+  {
+    "text": "weather forecast saying more rain tonite... dont know if thats gonna mak things worse lol",
+    "label": 5
+  },
+  {
+    "text": "apparently someones grandma got hurt pretty bad when her house came down?? bleeding n stuff but idk the details",
+    "label": 1
+  },
+  {
+    "text": "supposedly theres toxic smoke in the downtown area n ppl who breathd it r getting rly sick \ud83d\ude2c",
+    "label": 1
+  },
+  {
+    "text": "the mayor said shelters r 100% full n familys still need places 2 sleep... like whre do they even go??",
+    "label": 2
+  },
+  {
+    "text": "RUMOR ALERT: heard theres a whole building that just collasped but i think its fake news honestly",
+    "label": 5
+  },
+  {
+    "text": "dude old lady from down the street hasnt answered her door since monday... ppl worried she might b stuck inside",
+    "label": 4
+  },
+  {
+    "text": "some1 said theres people literally stuck in cars in the floodwaters??? like they cant get out nd the water is rising",
+    "label": 0
+  },
+  {
+    "text": "seen posts about needed generators nd fuel but no idea where 2 get them... supply chain is totally messed up rn",
+    "label": 2
+  },
+  {
+    "text": "Fence down on north 40, livestock scattered into neighbors field. Cows heading toward state rd, pls advise route closure needed ASAP",
+    "label": 3
+  },
+  {
+    "text": "Wife fell off ladder cleaning gutters, shes conscious but cant move her left leg. We r 8 miles from nearest hospital, pls send ambulance now",
+    "label": 1
+  },
+  {
+    "text": "Hay barn collpased in winds, lost most winter feed stock. Need 50 bales asap or herd wil starve. Any suppliers open in county?",
+    "label": 2
+  },
+  {
+    "text": "Main irrigation canal breached near Miller property, water flooding into valley. Dam integrity unknown, residents downstream at risk",
+    "label": 3
+  },
+  {
+    "text": "Dad had stroke this morning, speech all slurred. EMTs delayed 45 min due to washed out Bridge Rd. He's stable but needs hospital CT scan urgently",
+    "label": 1
+  },
+  {
+    "text": "My boy Tommy left with cattle drive team 2 days ago heading east, haven't heard nothing since. Storm hit that area yesterday. Is he ok???",
+    "label": 4
+  },
+  {
+    "text": "Diesel pump at co-op won't start, power line down across the property. No juice for 12 hrs, crops need irrigation tonight or theyre lost",
+    "label": 3
+  },
+  {
+    "text": "Stock tank cracked, animals have no water for 3 days now. Wells also dry. Desperately need tanker truck delivery or livestock will perish",
+    "label": 2
+  },
+  {
+    "text": "Got a strong sulfur smell coming from the geothermal well site west of barn. Not burning but tnk something might be rupturing, roads r cratered there",
+    "label": 3
+  },
+  {
+    "text": "Thankful to have made it thru the storm ok, praying for farmers who lost everything. Gods blessing on all the rescue workers out there doing amazing work",
+    "label": 5
+  },
+  {
+    "text": "Sister wasnt home when storm hit, suppose to b at market but nowbody seen her. Red Ford pickup, she had 3 kids with her. Plz help us find them",
+    "label": 4
+  },
+  {
+    "text": "Silo toppled over, half of it crushed the equipment shed. Partner is trapped under metal panels near the south wall, we need help right now pls hurry",
+    "label": 0
+  },
+  {
+    "text": "Barn flooded 4 feet deep, sheep r still inside penned area. Water level rising, cants reach them. They will drown if not pulled out asap",
+    "label": 0
+  },
+  {
+    "text": "Antibiotic meds for cattle herd ran out yesterday, animal starting to show infection. Vet clinic destroyed in storm, nearest one is 30 miles away, need delivery",
+    "label": 2
+  },
+  {
+    "text": "Road to town completely washed out, bridge supports look unstable. Big truck traffic heading that way, someone could get killed if it collapses",
+    "label": 3
+  },
+  {
+    "text": "Musta breathed in lot of smoke when barn caught fire, chest is tight now and headache wont go away. Normal after few hours or should i get checked?",
+    "label": 1
+  },
+  {
+    "text": "Just wanted 2 say weather sure is unpredictable these days. My grandpappy says worst storm he saw was 1987, this ones pretty bad 2 i guess",
+    "label": 5
+  },
+  {
+    "text": "Hermano didnt come home from field work yesterday before storm, been trying his cell all day no answer. He know the land, might b sheltered somewhere. Has anyone seen him?",
+    "label": 4
+  },
+  {
+    "text": "Grain silo cracked and leaking, diesel tank next 2 it may be compromised. Smell is bad, risk of contamination 2 groundwater. This needs oficiel inspection asap",
+    "label": 3
+  },
+  {
+    "text": "Need 200 lbs of feed pellets and medical supplies for horses, regular distributor washed away. Stock low, can you get shipment to rural route 7 by tomorow noon?",
+    "label": 2
+  }
+]

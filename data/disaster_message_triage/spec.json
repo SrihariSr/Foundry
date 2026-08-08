@@ -1,0 +1,80 @@
+{
+  "task_name": "disaster_message_triage",
+  "num_classes": 6,
+  "labels": [
+    {
+      "name": "urgent_rescue_needed",
+      "definition": "Message indicates people are currently trapped, stranded, or in immediate life-threatening danger and require physical extraction or rescue by responders (e.g., flood, collapse, fire).",
+      "examples_of_edge_cases": [
+        "we r stuck on the roof water rising fast cant get out",
+        "3 people trapped under collapsed porch on Maple St, hurry",
+        "my car is sinking in the flood water near the bridge, help now",
+        "grandma is locked in the basement and the stairs collapsed, she can't move"
+      ]
+    },
+    {
+      "name": "medical_emergency",
+      "definition": "Message reports a person experiencing a serious injury, illness, or health crisis that needs medical attention, but does not describe entrapment requiring rescue.",
+      "examples_of_edge_cases": [
+        "my dad is having chest pains and we cant reach 911",
+        "neighbor cut her leg bad on debris, bleeding wont stop",
+        "is it normal to feel dizzy after breathing smoke for an hour?",
+        "someone collapsed at the shelter, not breathing right"
+      ]
+    },
+    {
+      "name": "resource_request",
+      "definition": "Message asks for essential supplies or logistical support such as food, clean water, shelter, power, medication refills, or transportation, without an immediate life-threat.",
+      "examples_of_edge_cases": [
+        "we have no clean water left for 2 days, kids are thirsty",
+        "need insulin, ran out yesterday, pharmacy is closed",
+        "family of 5 needs a place to sleep tonight, shelter is full",
+        "do you know when the generator trucks are coming to our block?"
+      ]
+    },
+    {
+      "name": "infrastructure_hazard_report",
+      "definition": "Message reports damage or dangerous conditions to physical infrastructure or the environment (roads, buildings, utilities, gas leaks, downed lines) that responders need to assess or secure, without a currently trapped person.",
+      "examples_of_edge_cases": [
+        "strong smell of gas near 5th and Oak, no one's hurt but seems dangerous",
+        "power line down across the road, sparking, cars driving near it",
+        "bridge on Route 9 has a huge crack, might not be safe to cross",
+        "whole roof of the school caved in, building's empty right now though"
+      ]
+    },
+    {
+      "name": "missing_person",
+      "definition": "Message reports that a specific named or described individual cannot be located or contacted since the disaster and asks for help finding or confirming their status.",
+      "examples_of_edge_cases": [
+        "havent heard from my son since the storm hit, he was near the river",
+        "my elderly neighbor isn't answering her door or phone, worried something happened",
+        "has anyone seen a woman in a red coat, she wandered off from the shelter confused",
+        "my dog ran off during the evacuation, please tell me if you see him"
+      ]
+    },
+    {
+      "name": "non_actionable",
+      "definition": "Message contains general commentary, gratitude, questions unrelated to a concrete need, rumors, or emotional expression that does not require a direct operational response from emergency personnel.",
+      "examples_of_edge_cases": [
+        "thank you to all the first responders out there, you're heroes",
+        "is it going to rain again tomorrow? just curious",
+        "this storm is crazy, never seen anything like it in my life",
+        "praying for everyone affected right now"
+      ]
+    }
+  ],
+  "generation_personas": [
+    "An elderly widower in his 80s with a basic flip phone, texting in short fragmented sentences with typos, unfamiliar with abbreviations, sometimes includes unnecessary personal detail.",
+    "A panicked teenager using a smartphone during a flash flood, typing fast with heavy slang, abbreviations like 'rn' and 'pls', minimal punctuation, some emojis.",
+    "A calm, organized neighborhood volunteer coordinator who writes structured, complete-sentence updates summarizing multiple reports from her block for the response team.",
+    "A recent immigrant with limited English proficiency, using simple broken phrasing, occasionally mixing in words from their native language, translated somewhat literally.",
+    "A rural farmer with spotty cell signal sending terse SMS messages, abbreviating words to save characters, focused on practical details like animals and roads.",
+    "A social-media-savvy young adult posting to a public disaster hashtag feed, using exclamation points, hashtags, and tagging locations, sometimes exaggerating for attention.",
+    "A deaf man using a text relay/TTY-style service, writing very literally and tersely, no idioms, sometimes third-person phrasing from the relay operator.",
+    "A small business owner assessing damage to his storefront, writing clear, professional, detail-oriented messages including addresses and estimated severity.",
+    "A frantic parent separated from their child during evacuation, writing in an emotional, run-on, urgent style with repeated words and multiple exclamation marks.",
+    "A retired nurse volunteering at a shelter, calm and precise, using some medical terminology accurately when describing patients' conditions.",
+    "A non-literate elderly woman dictating a message via a relative's phone, resulting in simple, colloquial spoken-style phrasing transcribed as text.",
+    "A bored bystander far from the disaster zone posting speculative commentary and rumors they heard online, not directly affected themselves."
+  ]
+}

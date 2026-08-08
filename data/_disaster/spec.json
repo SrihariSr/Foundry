@@ -1,0 +1,74 @@
+{
+  "task_name": "disaster_message_triage",
+  "num_classes": 6,
+  "labels": [
+    {
+      "name": "life_threatening_rescue",
+      "definition": "Message indicates a person or group is in immediate life-threatening danger and needs physical extraction or rescue right now (trapped, drowning, buried, stranded by rising water/fire).",
+      "examples_of_edge_cases": [
+        "water is up to my chest and rising, kids on the roof with me, hurry",
+        "building next door collapsed, i can hear someone screaming under the rubble",
+        "stuck in my car on the bridge, engine is off, water coming in fast cant open door"
+      ]
+    },
+    {
+      "name": "medical_emergency",
+      "definition": "Message describes a person needing urgent medical attention (injury, unconsciousness, labor, chest pain, severe bleeding) but who is not currently trapped or in imminent physical danger of the environment.",
+      "examples_of_edge_cases": [
+        "my dad fell during the quake and hes bleeding a lot from his head, still conscious",
+        "neighbor is having contractions, roads are blocked, need an ambulance or paramedic",
+        "elderly woman collapsed, breathing but not responding, we are at the shelter entrance"
+      ]
+    },
+    {
+      "name": "hazard_report",
+      "definition": "Message reports an environmental or infrastructure danger (fire, gas leak, downed power line, collapsing structure, blocked/flooded road) that responders need to address or route around, without a specific person currently trapped or injured.",
+      "examples_of_edge_cases": [
+        "gas smell really strong near 5th and main, nobody hurt yet but its getting worse",
+        "power line down across Oak St, sparking, cars driving around it, someone will get hurt",
+        "the dam near our town looks like its cracking, no evacuation order yet"
+      ]
+    },
+    {
+      "name": "resource_need",
+      "definition": "Message requests non-emergency supplies or support such as food, water, shelter, blankets, medication refills, or transportation, where lack of the resource is not immediately life-threatening.",
+      "examples_of_edge_cases": [
+        "we're okay but out of drinking water at the community center, about 40 people",
+        "does anyone have extra insulin, my prescription got washed away",
+        "need a ride to the shelter, roads near us are fine just no car"
+      ]
+    },
+    {
+      "name": "situational_update",
+      "definition": "Message shares status, location safety, general observations, offers of help, or coordination info that responders may find useful for awareness but does not itself request or require dispatch.",
+      "examples_of_edge_cases": [
+        "just checked in, we're safe at my sister's place across town",
+        "power is back on in the north side as of 10pm",
+        "volunteers with boats are gathering at the church parking lot if anyone needs to organize"
+      ]
+    },
+    {
+      "name": "non_actionable",
+      "definition": "Message is irrelevant, unclear, spam, a joke, or otherwise provides nothing responders can act on or use.",
+      "examples_of_edge_cases": [
+        "lol this weather app is so wrong again",
+        "is anyone else's wifi down or is it just me",
+        "praying for everyone stay safe out there \ud83d\ude4f\ud83d\ude4f"
+      ]
+    }
+  ],
+  "generation_personas": [
+    "A teenager livetweeting an earthquake from under a desk, using hashtags, emojis, and abbreviated slang, phone at 15% battery",
+    "A middle-aged flood victim texting 911's SMS line in all caps with typos, panicking, short fragmented sentences",
+    "An elderly man dictating a message to his grandson over the phone, formal and slightly confused phrasing, includes unnecessary pleasantries",
+    "A volunteer disaster-response coordinator posting structured, calm updates to a community forum with timestamps and locations",
+    "A non-native English speaker (recent immigrant) describing a gas leak using translated sentence structure and simple vocabulary",
+    "A person with limited literacy texting phonetically spelled words and no punctuation, describing a collapsed roof",
+    "A local news intern relaying verified facts from scanner traffic in terse, factual, third-person style",
+    "A bored teenager trolling the emergency hotline with a fake or joking report, casual internet slang",
+    "A person trapped in rubble typing one-handed on a cracked phone screen with a dying battery, using very short broken phrases",
+    "A rural farmer with spotty cell signal sending a voice-to-text message full of transcription errors about downed power lines and livestock",
+    "A nurse at an overwhelmed shelter clinic typing quick clinical shorthand about patient needs",
+    "An anxious parent separated from their child during evacuation, sending frantic, repetitive messages with pleading tone"
+  ]
+}

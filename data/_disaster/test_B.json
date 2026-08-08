@@ -1,0 +1,402 @@
+[
+  {
+    "text": "Gas is leaking from the pipe near the school building on Porter Avenue.",
+    "label": 2
+  },
+  {
+    "text": "The smell of gas is very strong at the intersection of Fifth and Market Street, no one is hurt at this time.",
+    "label": 2
+  },
+  {
+    "text": "We are detecting gas odor from the damaged line under the residential area, residents should evacuate now.",
+    "label": 0
+  },
+  {
+    "text": "Gas leak reported near the industrial zone, area is cordoned off and ventilation is underway.",
+    "label": 2
+  },
+  {
+    "text": "The smell of gas is coming from the broken main line at the shopping district.",
+    "label": 2
+  },
+  {
+    "text": "We found a gas leak beneath the apartment complex, people are safely outside waiting for repair.",
+    "label": 4
+  },
+  {
+    "text": "Gas is escaping from the damaged line near the hospital, evacuation protocols are in effect.",
+    "label": 0
+  },
+  {
+    "text": "A person has breathing problems from the gas exposure near the factory district.",
+    "label": 1
+  },
+  {
+    "text": "Gas leak is present at the railway station, authorities have closed the area.",
+    "label": 2
+  },
+  {
+    "text": "The smell of gas is very bad near the water treatment plant, but no injuries reported yet.",
+    "label": 2
+  },
+  {
+    "text": "Gas is leaking from the line at the community center, we need masks for vulnerable residents.",
+    "label": 3
+  },
+  {
+    "text": "We have safely relocated families from the gas leak zone to the gymnasium.",
+    "label": 4
+  },
+  {
+    "text": "Gas odor detected from the damaged main line near the residential complex, evacuation in progress.",
+    "label": 2
+  },
+  {
+    "text": "A man became unconscious from breathing gas fumes near the commercial district.",
+    "label": 1
+  },
+  {
+    "text": "Gas is leaking from the pipe under the main highway, heavy traffic is being redirected.",
+    "label": 2
+  },
+  {
+    "text": "The gas smell is strong at the park area, children must be kept indoors until cleared.",
+    "label": 2
+  },
+  {
+    "text": "Gas leak from the broken line is affecting multiple blocks, residents need safe shelter immediately.",
+    "label": 0
+  },
+  {
+    "text": "Gas is escaping from the damaged line, the area has been marked and people are being advised to stay away.",
+    "label": 4
+  },
+  {
+    "text": "Several people are reporting headaches and dizziness from the gas leak near the office building.",
+    "label": 1
+  },
+  {
+    "text": "Gas leak is confirmed at the distribution center on River Road.",
+    "label": 2
+  },
+  {
+    "text": "stuck under my desk at school cant move my legs sos #earthquake",
+    "label": 0
+  },
+  {
+    "text": "friend is bleeding really bad from broken glass, we're in the hallway safe but need medical help asap",
+    "label": 1
+  },
+  {
+    "text": "big crack forming in the parking structure near Pine Ave, looks like it could collapse soon nobody should park there",
+    "label": 2
+  },
+  {
+    "text": "we made it to the gym but running low on water for 200+ people here",
+    "label": 3
+  },
+  {
+    "text": "my school building is intact, we're all accounted for waiting for parents to pick us up",
+    "label": 4
+  },
+  {
+    "text": "lmaooo my phone almost died recording that shake",
+    "label": 5
+  },
+  {
+    "text": "water from burst pipe flooding the basement apartment 14th street rising fast family inside please",
+    "label": 0
+  },
+  {
+    "text": "mom got knocked unconscious when the bookshelf fell on her, shes breathing but wont wake up send help",
+    "label": 1
+  },
+  {
+    "text": "natural gas line ruptured near Commerce and River can smell it very strong situation deteriorating",
+    "label": 2
+  },
+  {
+    "text": "my grandpa needs his heart medication refill, pharmacy got damaged do we have any way to get it",
+    "label": 3
+  },
+  {
+    "text": "structural damage survey complete for Maple Ridge residential zone, 47 units with minor to moderate damage marked for inspection",
+    "label": 4
+  },
+  {
+    "text": "is this real or am i dreaming rn battery dying",
+    "label": 5
+  },
+  {
+    "text": "building is collapsing next to us, can hear screaming under the rubble, we are trapped inside the east wing immediate evacuation required",
+    "label": 0
+  },
+  {
+    "text": "teenagers group at library, 3 of them have serious lacerations from ceiling tile collapse, need ambulance immediately",
+    "label": 1
+  },
+  {
+    "text": "electrical fires spreading along the grid infrastructure on Harbor District, power loss expected within 30 minutes for 8 city blocks",
+    "label": 2
+  },
+  {
+    "text": "we need 50+ blankets and cots at the youth center immediately, 150 displaced residents no medical supplies either",
+    "label": 3
+  },
+  {
+    "text": "all-clear confirmation received from City Hall perimeter, secondary aftershocks subsiding, communications restored in downtown zone",
+    "label": 4
+  },
+  {
+    "text": "ok but why is everyone tweeting the same thing over and over",
+    "label": 5
+  },
+  {
+    "text": "water rising knee-deep in basement mall, shoppers still inside can't reach exits on south side, kya ho sakta hai",
+    "label": 0
+  },
+  {
+    "text": "young girl unconscious with possible spinal injury near the market intersection, bystanders stabilizing her but oxygen needed quickly",
+    "label": 1
+  },
+  {
+    "text": "roof collapsed on us were trapped under beams hurry",
+    "label": 0
+  },
+  {
+    "text": "my daughter under the rubble shes crying i can hear her",
+    "label": 0
+  },
+  {
+    "text": "half the roof came down on warehouse cant get out",
+    "label": 0
+  },
+  {
+    "text": "roof fell on my husbands leg hes bleeding real bad but we at safety now need ambulance",
+    "label": 1
+  },
+  {
+    "text": "my mom got hit when roof collapsed shes unconscious",
+    "label": 1
+  },
+  {
+    "text": "neighbor got crush injury to his arm hes in shock need paramedic asap",
+    "label": 1
+  },
+  {
+    "text": "big section of the roof is dangeling over the street gonna fall soon",
+    "label": 2
+  },
+  {
+    "text": "the whole warehouse roof looks unstable gonna come down more",
+    "label": 2
+  },
+  {
+    "text": "metal from roof everywhere on the road its not safe to drive thru",
+    "label": 2
+  },
+  {
+    "text": "roof collapsed we got like 20 ppl here nobody injured but running low on water",
+    "label": 3
+  },
+  {
+    "text": "we ok at the community center but the roof damage is bad we need blankets and food",
+    "label": 3
+  },
+  {
+    "text": "all of us got out safely from the building with the roof collapse",
+    "label": 4
+  },
+  {
+    "text": "the plaza roof came down yesterday but area is cordoned off now ppl are avoiding it",
+    "label": 4
+  },
+  {
+    "text": "some ppl gathering supplies for the ppl affected by the roof thing if anyone can help",
+    "label": 4
+  },
+  {
+    "text": "roof collapse lol imagine the repair bill",
+    "label": 5
+  },
+  {
+    "text": "did u guys hear about the roof is that supposed to happen",
+    "label": 5
+  },
+  {
+    "text": "roof fell down praying for everyone stay safe",
+    "label": 5
+  },
+  {
+    "text": "roof caved in but we crawled out need help getting to wife shes still trapped under debris",
+    "label": 0
+  },
+  {
+    "text": "my kid scraped up pretty bad when the roof fell maybe fractured arm",
+    "label": 1
+  },
+  {
+    "text": "we need tarps and plastic sheets the roof damage is letting rain in",
+    "label": 3
+  },
+  {
+    "text": "PLEASE HELP MY SON IS TRAPPED IN THE SHOPPING CENTER BASEMENT THE WATER IS RISING!!!",
+    "label": 0
+  },
+  {
+    "text": "omg omg where is emma i cnt find her shes only 8 and the bridge collapsed pls help",
+    "label": 0
+  },
+  {
+    "text": "my daughter was on the bus near the dam and nobody knows where it went now the dam is cracking i think",
+    "label": 0
+  },
+  {
+    "text": "JAKE HAS BAD ASTHMA AND WE RAN OUT OF HIS INHALER 3 DAYS AGO PLS NEED A PARAMEDIC",
+    "label": 1
+  },
+  {
+    "text": "my boy got hurt falling from the school steps during evacuation hes bleeding real bad from his leg help",
+    "label": 1
+  },
+  {
+    "text": "i lost my kid in the crowd at the evacuation center n now shes not answering her phone shes 14 w/ diabetes need her meds too where is she",
+    "label": 4
+  },
+  {
+    "text": "GAS SMELL SUPER STRONG BY THE EVACUATION ROUTE ON ROUTE 9 KIDS ARE PASSING THRU THERE",
+    "label": 2
+  },
+  {
+    "text": "the hospital parking lot theres like a massive electrical fire nobody cleared the area yet",
+    "label": 2
+  },
+  {
+    "text": "dude theres fuel leaking from the overturned tanker n ppl r still driving thru it cn anybody b stopped",
+    "label": 2
+  },
+  {
+    "text": "we r at the temp shelter w my son thank god but NO BABY FORMULA AT ALL n theres like 20 infants here",
+    "label": 3
+  },
+  {
+    "text": "kids need clean drinking wtr at the school gym evryones sick already PLEASE send some1",
+    "label": 3
+  },
+  {
+    "text": "my daughter is asthmatic n i cnt get 2 the pharmacy is ne1 near riverside hospital who can pick up prescriptions 4 us",
+    "label": 3
+  },
+  {
+    "text": "just got word my kid made it 2 the north shelter hes safe im crying thank god",
+    "label": 4
+  },
+  {
+    "text": "volunteers r organizing a search grid 4 missing ppl from the west side if u wanna help meet at oak street church",
+    "label": 4
+  },
+  {
+    "text": "UPDATE: finally found my daughter shes at the red cross center w minor cuts, gonna b ok",
+    "label": 4
+  },
+  {
+    "text": "i hope my kid is safe wherever shes at this is so scary i love her so much \ud83d\ude2d\ud83d\ude2d\ud83d\ude2d",
+    "label": 5
+  },
+  {
+    "text": "y wont my calls go thru everybodys lines must b overloaded this is insane",
+    "label": 5
+  },
+  {
+    "text": "dose anyone no if they can still get food deliveries in this area asking 4 a freind lol jk",
+    "label": 5
+  },
+  {
+    "text": "my son said hes stuck on the roof w his friends n the water keeps going up HELP US NOW PLEASE",
+    "label": 0
+  },
+  {
+    "text": "she got caught in the rubble near makati avenue i can hear her crying under the bricks SOMEBODY COME NOW",
+    "label": 0
+  },
+  {
+    "text": "The strong smell of gaz is coming from basement of building number 47 Maple Avenue. We have detect it since three hours ago and it is becoming more strong. Responders must come chek immediately plees.",
+    "label": 2
+  },
+  {
+    "text": "My brother he is breathing very bad and holding his chest, saying pain pain pain everywhere. We are at safe location but he need medical person now, his face is very white.",
+    "label": 1
+  },
+  {
+    "text": "Gas leak near the industrial sector, the kompaniya had called but workers are still inside the building. We herd hissing sound and smell very strong, nobody outside yet but danger is there.",
+    "label": 0
+  },
+  {
+    "text": "We safe now at the community centre on Harbor Road. Neighborhood where we live is evacuated but we ok, thank you for asking. The gaz situation they are handling it.",
+    "label": 4
+  },
+  {
+    "text": "I am reporting the gaz situation at Riverside Park area since yesterday morning. The smell is coming from underground pipes, it is worce now, but no peoples live very close to this lokation.",
+    "label": 2
+  },
+  {
+    "text": "Three person from apartment 5B have fainted from gaz inhalation, they are conscious now but very weak. We need the medical team to come evaluate them, they are breathing ok but very pale and dizzy.",
+    "label": 1
+  },
+  {
+    "text": "Hello hlo I smell gaz everywhere where I am lol is that normal in Amerika city or just my nose problem hahaha",
+    "label": 5
+  },
+  {
+    "text": "The gas leak it is nere the school building, children was still there when smell started. We evacuate them outside already but some of the kids they are coughing and complaining head pain, need check.",
+    "label": 1
+  },
+  {
+    "text": "Big gaz leak detected at the chemical storage facility on North Industrial way, the smell it is very very strong and spreading. We estimate the danger zone is maybe one kilometer all around, evacuation of nearby zona is rekomended.",
+    "label": 2
+  },
+  {
+    "text": "My grandmother she is trapped in her apartment on third floor, the building is filling with gaz smell and she cannot walk down stairs because of her leg. She is calling us help please send rescue team now!",
+    "label": 0
+  },
+  {
+    "text": "We need water and food for 50 persons at the evacuation site on Jefferson Boulevard, the gaz smell is cleared now but we have nothing to eat since yesterday.",
+    "label": 3
+  },
+  {
+    "text": "The city engineers they are saying the main gaz line under Downtown Street is broken from the earthquake. Smell is strong in radius of three block, but street is closed so no cars are going there.",
+    "label": 2
+  },
+  {
+    "text": "To the autorities: we are reporting gaz leak at the port warehouse number 12. Compani manager is not answering phone, smell started at approximately 14:30 today, it is still continuing.",
+    "label": 2
+  },
+  {
+    "text": "My husband he fell during evacuation from gaz smell and he hit his head on concrete, there is bleeding and he say his neck hurt. We are in apartment please send ambulance we dont know how to move him safe.",
+    "label": 1
+  },
+  {
+    "text": "The gaz smell near the residential blok it is getting much stronger every hour, we are worry about peoples with young children or old peoples. Evacuation was not order yet but maybe must happen soon, please advize.",
+    "label": 2
+  },
+  {
+    "text": "We are okay in the shelter, just want to update you family is safe. The gaz danger zone it is far from where we are now, thank you.",
+    "label": 4
+  },
+  {
+    "text": "Man is lying on the street he is unconscious after being near the gaz leak zone for too long. His kolegue he is trying to help, we are at intersection of Market and 9th Street, need ambulans urgently.",
+    "label": 1
+  },
+  {
+    "text": "Volunteers with the medical training are gathering at the church to help if more peoples have gaz poisoning symptoms, we have some oxygen equipment here.",
+    "label": 4
+  },
+  {
+    "text": "The elderly peoples they need medicine refills because evacuation happen so fast, we have three persons at the shelter with critical medications lost. Pharmacy is closed because of gaz situation near it.",
+    "label": 3
+  },
+  {
+    "text": "Two workers they are stuck in the basement of the factory building where the gaz leak is happening, they say the door is jammed and smell is very strong and burning eyes. They need immediate rescue now please!",
+    "label": 0
+  }
+]

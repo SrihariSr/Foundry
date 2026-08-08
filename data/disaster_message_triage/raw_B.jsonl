@@ -1,0 +1,100 @@
+{"text": "my wife Rosa she was at the market on Juniper when the building fell down, hasnt called me back", "label": "missing_person"}
+{"text": "basement is filling with water fast, cant get the door open, please hurry", "label": "urgent_rescue_needed"}
+{"text": "there is a beep beep sound coming from the gas line near the park, very dangerous condition", "label": "infrastructure_hazard_report"}
+{"text": "my heart is racing very fast and I cannot catch my breath, something is very wrong with me", "label": "medical_emergency"}
+{"text": "we need blankets and warm clothes, have nothing left after the storm took everything", "label": "resource_request"}
+{"text": "thank God the nurses are helping people, what a blessing for this community", "label": "non_actionable"}
+{"text": "my grandson he was supposed to meet me at the station, no word from him since this morning", "label": "missing_person"}
+{"text": "three people are stuck under the debris from the warehouse roof, urgent help needed now", "label": "urgent_rescue_needed"}
+{"text": "the medication I take for my heart, I have only two pills left, pharmacy is closed, bahut important", "label": "resource_request"}
+{"text": "large power lines are on the ground sparking near the school, is this very dangerous", "label": "infrastructure_hazard_report"}
+{"text": "my neighbor Mrs Chen she fell and hit her head, bleeding from her ear, we cannot reach the doctor", "label": "medical_emergency"}
+{"text": "I have lived here seventy years and never seen such a disaster, hoping for the best", "label": "non_actionable"}
+{"text": "my car rolled into the ravine and I am still inside, water is coming in please get me", "label": "urgent_rescue_needed"}
+{"text": "do you have any diabetic supplies and food items available for distribution", "label": "resource_request"}
+{"text": "bridge has a large sinkhole forming in the middle, very unsafe for the traffic to cross", "label": "infrastructure_hazard_report"}
+{"text": "my brother went to check on his house yesterday morning and we haven't heard anything since then", "label": "missing_person"}
+{"text": "I breathed a lot of smoke and now my lungs hurt when I try to breathe, is this normal", "label": "medical_emergency"}
+{"text": "the old theater on Main Street has its walls cracked and leaning, looks like it might fall", "label": "infrastructure_hazard_report"}
+{"text": "we are six people in one small room with no food or clean water, bahat zaroorat hai help", "label": "resource_request"}
+{"text": "so many people have lost their homes, this is just heartbreaking news for everyone", "label": "non_actionable"}
+{"text": "HELP!! stuck in basement of the Riverside Inn, water pouring in, cant find the door!!", "label": "urgent_rescue_needed"}
+{"text": "mom having really bad chest pains wont go to hospital, someone help me convince her", "label": "medical_emergency"}
+{"text": "we're out of baby formula and shops r closed, does anyone have any??? #SOS", "label": "resource_request"}
+{"text": "massive tree down on powerlines at junction St, sparking like crazy, pls send someone", "label": "infrastructure_hazard_report"}
+{"text": "havent seen my brother since yesterday morning near the park, hes 16, anyone seen him??", "label": "missing_person"}
+{"text": "honestly this disaster brought ppl together, feeling hopeful despite everything", "label": "non_actionable"}
+{"text": "2 ppl under the collapsed garage on Elm Ave cant move cant breathe URGENT", "label": "urgent_rescue_needed"}
+{"text": "my roommate got badly burned on her arm from the fire, shell lose some skin", "label": "medical_emergency"}
+{"text": "no power for 3 days, fridge empty, got 2 kids to feed, anyone distributing food today?", "label": "resource_request"}
+{"text": "gas smell really strong near the market, called it in but wanted to warn ppl here too", "label": "infrastructure_hazard_report"}
+{"text": "my cat went missing during the evacuation, shes orange w/ white paws, plzzz help me find her", "label": "missing_person"}
+{"text": "cant believe how fast the water came up, nature is insane #wildweather", "label": "non_actionable"}
+{"text": "PLEASE my grandpa is on the second floor and the stairs are gone, he cant get down!!", "label": "urgent_rescue_needed"}
+{"text": "neighbor got cut really deep on metal debris, bleeding wont stop, what do i do", "label": "medical_emergency"}
+{"text": "medications ran out, diabetic, pharmacies closed, need insulin asap, desperate", "label": "resource_request"}
+{"text": "whole section of the bridge looks cracked, unsafe to cross, cars still trying to drive it", "label": "infrastructure_hazard_report"}
+{"text": "looking for elderly woman named Rita, left the shelter confused yesterday, red jacket", "label": "missing_person"}
+{"text": "so grateful for the volunteers handing out water this morning, you guys r amazing!", "label": "non_actionable"}
+{"text": "car sinking in the flooded creek near the overpass, im still in it HELP NOW", "label": "urgent_rescue_needed"}
+{"text": "dizzy and coughing after breathing all that smoke, is this normal or should i get checked", "label": "medical_emergency"}
+{"text": "Cattle herd trapped in flooded pasture south of Ridge Road, water still rising, animals cannot escape.", "label": "urgent_rescue_needed"}
+{"text": "Farm equipment operator suffered severe laceration on left arm from machinery, bleeding heavily, requesting immediate medical assistance.", "label": "medical_emergency"}
+{"text": "Requesting delivery of livestock feed and fresh water supplies to the county fairgrounds shelter for displaced animals.", "label": "resource_request"}
+{"text": "Main irrigation canal has structural breach at mile marker seven, creating erosion hazard and threatening adjacent properties.", "label": "infrastructure_hazard_report"}
+{"text": "My son has not made contact since the storm reached the western ridge where he was checking on grazing animals.", "label": "missing_person"}
+{"text": "Grateful acknowledgment of emergency services coordinating livestock evacuation procedures in our district.", "label": "non_actionable"}
+{"text": "Farmhand trapped in barn loft as floodwater rises through first floor, unable to reach exit safely.", "label": "urgent_rescue_needed"}
+{"text": "Worker experienced sudden loss of consciousness in grain storage facility, appears unresponsive to voice commands.", "label": "medical_emergency"}
+{"text": "Require insulin delivery and prescription refill for diabetic family member, all pharmacies currently closed.", "label": "resource_request"}
+{"text": "Electrical transformer exploded near the northern access gate, creating fire hazard in surrounding brush.", "label": "infrastructure_hazard_report"}
+{"text": "Cannot locate elderly hired hand who departed toward the eastern fields before communications were disrupted.", "label": "missing_person"}
+{"text": "The resilience shown by neighboring farming communities in this disaster is truly remarkable.", "label": "non_actionable"}
+{"text": "Three dairy cattle remain stranded on the hillside island, completely surrounded by moving water with no dry passage.", "label": "urgent_rescue_needed"}
+{"text": "Farmer suffered deep puncture wound to foot from debris, infection risk increasing without medical evaluation.", "label": "medical_emergency"}
+{"text": "Seeking shelter accommodation for ten displaced farm workers whose housing was damaged.", "label": "resource_request"}
+{"text": "Collapsed fence section has exposed live electrical fencing to adjacent public access route, immediate hazard.", "label": "infrastructure_hazard_report"}
+{"text": "Family members have not responded to contact attempts since evacuation orders were issued for the basin area.", "label": "missing_person"}
+{"text": "The community spirit demonstrated by volunteer responders has been exceptional throughout this event.", "label": "non_actionable"}
+{"text": "Partner stuck in equipment shed as water breaches the north wall, cannot unlatch the door from inside.", "label": "urgent_rescue_needed"}
+{"text": "Request emergency propane delivery to restore heating capability for livestock shelter facilities.", "label": "resource_request"}
+{"text": "omg heard some ppl saying theres a gas leak on broadwy??? like massive explosion risk supposedly lol", "label": "infrastructure_hazard_report"}
+{"text": "nah fr fr my cousins frnd said there r ppl stuck in the subwy tunnels but idk if thts real or just bs", "label": "urgent_rescue_needed"}
+{"text": "yo did u see that vid of the bridge literally CRACKING?? like no one go there apparently its abt 2 collapse", "label": "infrastructure_hazard_report"}
+{"text": "cant believe ppl actually lost everythng... thoughts n prayers 4 everyone going thru this rn \u2764\ufe0f", "label": "non_actionable"}
+{"text": "someone on reddit said their dog went missing during evac nd they havent found him yet... hope he shows up soon", "label": "missing_person"}
+{"text": "heard the hospital is running out of meds?? like they ran out of insulin or smth nd ppl need it ASAP", "label": "resource_request"}
+{"text": "bro the whole neighborhood got flooded liek water is up 2 the roofs... ppl literally cant leave!!!", "label": "urgent_rescue_needed"}
+{"text": "wait r the power lines still down on the east side??? saw some sparks earlier n its lowkey scary", "label": "infrastructure_hazard_report"}
+{"text": "my gfs aunt hasnt been reachd since the evac started... shes supposed 2 be at her sisters place but no answer", "label": "missing_person"}
+{"text": "ppl r saying theres no clean water 4 days now... kids getting sick from drinking dirty stuff omg", "label": "resource_request"}
+{"text": "heard some guy had a hart attack during the chaos nd ambulances r backed up 4 hours wtf", "label": "medical_emergency"}
+{"text": "yo there might b a whole family traped in their basment?? wall collapsed apparently sumwhere in the north district", "label": "urgent_rescue_needed"}
+{"text": "weather forecast saying more rain tonite... dont know if thats gonna mak things worse lol", "label": "non_actionable"}
+{"text": "apparently someones grandma got hurt pretty bad when her house came down?? bleeding n stuff but idk the details", "label": "medical_emergency"}
+{"text": "supposedly theres toxic smoke in the downtown area n ppl who breathd it r getting rly sick \ud83d\ude2c", "label": "medical_emergency"}
+{"text": "the mayor said shelters r 100% full n familys still need places 2 sleep... like whre do they even go??", "label": "resource_request"}
+{"text": "RUMOR ALERT: heard theres a whole building that just collasped but i think its fake news honestly", "label": "non_actionable"}
+{"text": "dude old lady from down the street hasnt answered her door since monday... ppl worried she might b stuck inside", "label": "missing_person"}
+{"text": "some1 said theres people literally stuck in cars in the floodwaters??? like they cant get out nd the water is rising", "label": "urgent_rescue_needed"}
+{"text": "seen posts about needed generators nd fuel but no idea where 2 get them... supply chain is totally messed up rn", "label": "resource_request"}
+{"text": "Fence down on north 40, livestock scattered into neighbors field. Cows heading toward state rd, pls advise route closure needed ASAP", "label": "infrastructure_hazard_report"}
+{"text": "Wife fell off ladder cleaning gutters, shes conscious but cant move her left leg. We r 8 miles from nearest hospital, pls send ambulance now", "label": "medical_emergency"}
+{"text": "Hay barn collpased in winds, lost most winter feed stock. Need 50 bales asap or herd wil starve. Any suppliers open in county?", "label": "resource_request"}
+{"text": "Main irrigation canal breached near Miller property, water flooding into valley. Dam integrity unknown, residents downstream at risk", "label": "infrastructure_hazard_report"}
+{"text": "Dad had stroke this morning, speech all slurred. EMTs delayed 45 min due to washed out Bridge Rd. He's stable but needs hospital CT scan urgently", "label": "medical_emergency"}
+{"text": "My boy Tommy left with cattle drive team 2 days ago heading east, haven't heard nothing since. Storm hit that area yesterday. Is he ok???", "label": "missing_person"}
+{"text": "Diesel pump at co-op won't start, power line down across the property. No juice for 12 hrs, crops need irrigation tonight or theyre lost", "label": "infrastructure_hazard_report"}
+{"text": "Stock tank cracked, animals have no water for 3 days now. Wells also dry. Desperately need tanker truck delivery or livestock will perish", "label": "resource_request"}
+{"text": "Got a strong sulfur smell coming from the geothermal well site west of barn. Not burning but tnk something might be rupturing, roads r cratered there", "label": "infrastructure_hazard_report"}
+{"text": "Thankful to have made it thru the storm ok, praying for farmers who lost everything. Gods blessing on all the rescue workers out there doing amazing work", "label": "non_actionable"}
+{"text": "Sister wasnt home when storm hit, suppose to b at market but nowbody seen her. Red Ford pickup, she had 3 kids with her. Plz help us find them", "label": "missing_person"}
+{"text": "Silo toppled over, half of it crushed the equipment shed. Partner is trapped under metal panels near the south wall, we need help right now pls hurry", "label": "urgent_rescue_needed"}
+{"text": "Barn flooded 4 feet deep, sheep r still inside penned area. Water level rising, cants reach them. They will drown if not pulled out asap", "label": "urgent_rescue_needed"}
+{"text": "Antibiotic meds for cattle herd ran out yesterday, animal starting to show infection. Vet clinic destroyed in storm, nearest one is 30 miles away, need delivery", "label": "resource_request"}
+{"text": "Road to town completely washed out, bridge supports look unstable. Big truck traffic heading that way, someone could get killed if it collapses", "label": "infrastructure_hazard_report"}
+{"text": "Musta breathed in lot of smoke when barn caught fire, chest is tight now and headache wont go away. Normal after few hours or should i get checked?", "label": "medical_emergency"}
+{"text": "Just wanted 2 say weather sure is unpredictable these days. My grandpappy says worst storm he saw was 1987, this ones pretty bad 2 i guess", "label": "non_actionable"}
+{"text": "Hermano didnt come home from field work yesterday before storm, been trying his cell all day no answer. He know the land, might b sheltered somewhere. Has anyone seen him?", "label": "missing_person"}
+{"text": "Grain silo cracked and leaking, diesel tank next 2 it may be compromised. Smell is bad, risk of contamination 2 groundwater. This needs oficiel inspection asap", "label": "infrastructure_hazard_report"}
+{"text": "Need 200 lbs of feed pellets and medical supplies for horses, regular distributor washed away. Stock low, can you get shipment to rural route 7 by tomorow noon?", "label": "resource_request"}
