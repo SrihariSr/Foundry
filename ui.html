@@ -313,7 +313,7 @@ function paintMetrics(m, kb) {
     <div class="stat"><div class="k">Accuracy</div><div class="v">${pct(m.accuracy)}</div><div class="s">${m.n} examples</div></div>
     <div class="stat"><div class="k">Macro F1</div><div class="v">${m.macro_f1.toFixed(3)}</div><div class="s">unweighted</div></div>
     <div class="stat"><div class="k">Latency</div><div class="v">${m.median_latency_ms.toFixed(2)}<span style="font-size:12px"> ms</span></div><div class="s">median, on device</div></div>
-    <div class="stat"><div class="k">Casting</div><div class="v">${kb ? kb.toFixed(0) : '—'}<span style="font-size:12px"> KB</span></div><div class="s">stdlib only</div></div>`;
+    <div class="stat"><div class="k">Casting</div><div class="v">${kb ? kb.toFixed(0) : '—'}<span style="font-size:12px"> KB</span></div><div class="s">stdlib only, int8</div></div>`;
 
   let rows = '';
   m.labels.forEach((n, i) => {

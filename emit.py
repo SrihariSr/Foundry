@@ -49,9 +49,18 @@ def _load(encoded):
     return values
 
 
-# W1T is the first layer transposed to (FEATURE_DIM, HIDDEN_DIM) so that a
-# sparse feature index selects one contiguous row.
-_W1T = _load("$w1t")
+def _load_int8(encoded):
+    values = array.array("b")
+    values.frombytes(base64.b64decode(encoded))
+    return values
+
+
+# W1Q is the first layer transposed to (FEATURE_DIM, HIDDEN_DIM) so that a
+# sparse feature index selects one contiguous row, then symmetrically
+# quantised to int8 with one scale per hidden unit. W1S holds those
+# HIDDEN_DIM scales.
+_W1Q = _load_int8("$w1q")
+_W1S = _load("$w1s")
 _B1 = _load("$b1")
 _W2 = _load("$w2")
 _B2 = _load("$b2")
@@ -79,15 +88,21 @@ def featurise(text):
 
 
 def logits(text):
-    hidden = list(_B1)
+    # Accumulate against raw int8 weights. Each scale is per hidden unit and
+    # constant across features, so it applies once after the loop rather than
+    # once per inner iteration. The accumulator stays float because the feature
+    # value is a float; the win is one fewer multiply per inner iteration.
+    unscaled = [0.0] * HIDDEN_DIM
     for index, value in featurise(text):
         offset = index * HIDDEN_DIM
         for j in range(HIDDEN_DIM):
-            hidden[j] += value * _W1T[offset + j]
+            unscaled[j] += value * _W1Q[offset + j]
 
+    hidden = [0.0] * HIDDEN_DIM
     for j in range(HIDDEN_DIM):
-        if hidden[j] < 0.0:
-            hidden[j] = 0.0
+        activation = unscaled[j] * _W1S[j] + _B1[j]
+        if activation > 0.0:
+            hidden[j] = activation
 
     out = []
     for k in range(NUM_CLASSES):
@@ -122,6 +137,41 @@ def to_base64(tensor) -> str:
     return base64.b64encode(tensor.detach().numpy().astype("<f4").tobytes()).decode("ascii")
 
 
+def quantise_per_column(weight_t):
+    """Symmetric int8 quantisation of (FEATURE_DIM, HIDDEN_DIM), one scale per column.
+
+    Per-column, not per-tensor: each hidden unit gets its own scale, so a unit
+    with small weights is not crushed by another unit's large ones.
+    Returns (int8 base64, float32 scales base64).
+    """
+    weights = weight_t.detach().numpy().astype("float32")
+    max_abs = np.abs(weights).max(axis=0)
+
+    # A hidden unit with all-zero weights has no scale to derive. 1.0 is exact
+    # there, since every quantised value is 0 and dequantises back to 0.
+    degenerate = int((max_abs == 0).sum())
+    if degenerate:
+        print(f"note: {degenerate} hidden unit(s) have all-zero weights; scale set to 1.0")
+    scales = np.where(max_abs == 0, 1.0, max_abs / 127.0).astype("float32")
+
+    quantised = np.rint(weights / scales).astype("int32")
+    if quantised.min() < -127 or quantised.max() > 127:
+        raise ValueError(
+            f"quantised values out of int8 symmetric range: "
+            f"[{quantised.min()}, {quantised.max()}]"
+        )
+    quantised = quantised.astype("int8")
+
+    error = np.abs(weights - quantised.astype("float32") * scales)
+    print(f"quantisation: max abs error {error.max():.3e}, "
+          f"mean {error.mean():.3e}, scales {scales.min():.3e}..{scales.max():.3e}")
+
+    return (
+        base64.b64encode(quantised.tobytes()).decode("ascii"),
+        base64.b64encode(scales.astype("<f4").tobytes()).decode("ascii"),
+    )
+
+
 def emit(model, spec, path):
     state = model.state_dict()
     weight1, bias1 = state["0.weight"], state["0.bias"]
@@ -133,6 +183,7 @@ def emit(model, spec, path):
     if tuple(weight2.shape) != (spec["num_classes"], HIDDEN_DIM):
         raise ValueError(f"layer 2 weight is {tuple(weight2.shape)}, unexpected")
 
+    w1q, w1s = quantise_per_column(weight1.t().contiguous())
     source = CASTING.substitute(
         task_name=spec["task_name"],
         feature_dim=FEATURE_DIM,
@@ -140,7 +191,8 @@ def emit(model, spec, path):
         num_classes=spec["num_classes"],
         ngram_sizes=repr(tuple(NGRAM_SIZES)),
         labels=json.dumps([label["name"] for label in spec["labels"]]),
-        w1t=to_base64(weight1.t().contiguous()),
+        w1q=w1q,
+        w1s=w1s,
         b1=to_base64(bias1),
         w2=to_base64(weight2),
         b2=to_base64(bias2),
